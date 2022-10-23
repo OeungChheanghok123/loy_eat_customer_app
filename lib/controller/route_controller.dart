@@ -8,5 +8,5 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/home', page: () => Home()),
   GetPage(name: '/food_detail', page: () => FoodDetail()),
   GetPage(name: '/food_by_category', page: () => FoodByCategory()),
-  GetPage(name: '/merchant_detail', page: () => const MerchantDetail()),
+  GetPage(name: '/merchant_detail', page: () => MerchantDetail()),
 ];
