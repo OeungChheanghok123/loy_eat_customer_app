@@ -338,9 +338,12 @@ class FoodDetail extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: report!.length,
             itemBuilder: (context, index) {
-              return categoryStore(
-                title: foodDetailController.listCuisines[index],
-                image: foodDetailController.listCuisinesImage[index],
+              return InkWell(
+                onTap: () => Get.toNamed('/food_by_category', arguments: {'title': foodDetailController.listCuisines[index]}),
+                child: categoryStore(
+                  title: foodDetailController.listCuisines[index],
+                  image: foodDetailController.listCuisinesImage[index],
+                ),
               );
             },
           ),
