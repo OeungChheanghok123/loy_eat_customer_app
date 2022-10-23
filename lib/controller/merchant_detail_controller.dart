@@ -4,6 +4,8 @@ import 'package:loy_eat_customer/model/remote_data.dart';
 
 class MerchantDetailController extends GetxController {
 
+  var selectedIndex = 0.obs;
+
   var title = ''.obs;
   var time = ''.obs;
   var fee = ''.obs;
@@ -35,6 +37,7 @@ class MerchantDetailController extends GetxController {
     super.onInit();
     getArgumentMerchant();
     getProductItem();
+    listMapProductItem = [{}];
   }
 
   void getArgumentMerchant() {

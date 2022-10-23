@@ -114,15 +114,15 @@ class _MerchantDetailState extends State<MerchantDetail> {
                               Text(' 1.6km , ${controller.time.value}min | ', style: const TextStyle(fontSize: 14)),
                               controller.fee.value == '0.00'
                                   ? Text('Free delivery fee',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue.withOpacity(0.7),
-                                      ),
-                                    )
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue.withOpacity(0.7),
+                                ),
+                              )
                                   : Text('\$${controller.fee.value} Delivery fee',
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
+                                style: const TextStyle(fontSize: 14),
+                              ),
                             ],
                           ),
                         ),
@@ -173,6 +173,7 @@ class _MerchantDetailState extends State<MerchantDetail> {
               itemCount: report!.length,
               itemBuilder: (context, index) {
                 return bodyItems(
+                  index: index,
                   image: controller.arrayProductImage[index],
                   name: controller.arrayProductName[index],
                   price: controller.arrayProductPrice[index],
@@ -186,7 +187,7 @@ class _MerchantDetailState extends State<MerchantDetail> {
 
   }
 
-  Widget bodyItems({required String image, required String name, required String price}) {
+  Widget bodyItems({required int index, required String image, required String name, required String price}) {
     return Container(
       width: Get.width,
       height: 100,
@@ -240,22 +241,117 @@ class _MerchantDetailState extends State<MerchantDetail> {
             right: 5,
             bottom: 2,
             child: InkWell(
-              onTap: () {},
-              child: Container(
-                width: 55,
-                height: 25,
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(25),
+              onTap: () {
+                controller.selectedIndex.value = index;
+              },
+              child: controller.tempListProduct.contains(controller.arrayProductName[index]) ?
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        setState((){
+                          controller.qty.value--;
+
+                          if (controller.qty.value == 0) {
+                            controller.tempListProduct.remove(controller.arrayProductName[index]);
+                            controller.tempListQty.removeAt(index);
+
+                            controller.listMapProductItem.removeWhere((data) {
+                              return data['product_name'] == controller.arrayProductName[index].toString();
+                            });
+
+                            controller.qty.value = 0;
+                          }
+                          else {
+                            controller.listMapProductItem.removeWhere((data) {
+                              return data['product_name'] == controller.arrayProductName[index].toString();
+                            });
+                            controller.listMapProductItem.add({'product_name': controller.arrayProductName[index].toString(), 'qty': controller.qty.value.toString()});
+
+                          }
+
+                          debugPrint('tempListQty: ${controller.tempListQty}');
+                          debugPrint('listMapProductItem: ${controller.listMapProductItem}');
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: const Icon(Icons.remove, color: Colors.white, size: 16),
+                      ),
+                    ),
+                    Text('   ${controller.arrayProductQty[index]}   ', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    InkWell(
+                      onTap: () {
+                        setState((){
+                          controller.qty.value++;
+
+                          controller.listMapProductItem.removeWhere((data) {
+                            return data['product_name'] == controller.arrayProductName[index].toString();
+                          });
+                          controller.listMapProductItem.add({'product_name': controller.arrayProductName[index].toString(), 'qty': controller.qty.value.toString()});
+
+                          debugPrint('listMapProductItem: ${controller.listMapProductItem}');
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: const Icon(Icons.add, color: Colors.white, size: 16),
+                      ),
+                    ),
+                  ],
+                ) :
+                InkWell(
+                  onTap: () {
+                    setState((){
+                      if (controller.tempListProduct.contains(controller.arrayProductName[index].toString())) {
+                        controller.tempListProduct.remove(controller.arrayProductName[index].toString());
+                        controller.tempListQty.removeAt(index);
+
+                        controller.listMapProductItem.removeWhere((data) {
+                          return data['product_name'] == controller.arrayProductName[index].toString();
+                        });
+                      }
+                      else {
+
+
+
+                        controller.tempListProduct.add(controller.arrayProductName[index].toString());
+                        controller.tempListQty.add((int.parse(controller.arrayProductQty[index]) + 1).toString());
+
+                        controller.listMapProductItem.add({
+                          'product_name': controller.arrayProductName[index].toString(),
+                          'qty': (int.parse(controller.arrayProductQty[index]) + 1).toString(),
+                        });
+                        controller.qty.value++;
+                      }
+                    });
+
+                    debugPrint('tempArray: ${controller.tempListProduct}');
+                    debugPrint('qty: ${controller.qty.value}');
+                    debugPrint('listMapProductItem: ${controller.listMapProductItem}');
+                  },
+                  child: Container(
+                    width: 55,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: const Center(
+                      child: Text('  Add + ', style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      )),
+                    ),
+                  ),
                 ),
-                child: const Center(
-                  child: Text('  Add + ', style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  )),
-                ),
-              ),
             ),
           ),
         ],
