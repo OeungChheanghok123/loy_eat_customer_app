@@ -60,7 +60,7 @@ class MerchantDetailController extends GetxController {
                 arrayProductImage.add(data.data()['image'] ?? '');
                 arrayProductName.add(data.data()['product_name'] ?? '');
                 arrayProductPrice.add(data.data()['price'] ?? '');
-                arrayProductQty.add('0');
+                arrayProductQty.add(data.data()['product_name'] ?? '');
               }
               _productItemData.value = RemoteData<List>(status: RemoteDataStatus.success, data: arrayProductName);
             }

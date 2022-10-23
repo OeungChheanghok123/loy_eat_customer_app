@@ -190,7 +190,7 @@ class _MerchantDetailState extends State<MerchantDetail> {
   Widget bodyItems({required int index, required String image, required String name, required String price}) {
     return Container(
       width: Get.width,
-      height: 100,
+      height: 110,
       margin: const EdgeInsets.only(bottom: 15),
       child: Stack(
         children: [
@@ -318,8 +318,6 @@ class _MerchantDetailState extends State<MerchantDetail> {
                         });
                       }
                       else {
-
-
 
                         controller.tempListProduct.add(controller.arrayProductName[index].toString());
                         controller.tempListQty.add((int.parse(controller.arrayProductQty[index]) + 1).toString());
