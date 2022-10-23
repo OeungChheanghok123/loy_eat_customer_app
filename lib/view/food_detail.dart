@@ -39,7 +39,7 @@ class FoodDetail extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          buildCategoryDelivery,
+          buildCategoryFreeDelivery,
           buildCategoryDrink,
           buildCategoryCuisines,
           buildAllRestaurant,
@@ -48,7 +48,7 @@ class FoodDetail extends StatelessWidget {
     );
   }
 
-  Widget get buildCategoryDelivery {
+  Widget get buildCategoryFreeDelivery {
     return Container(
       width: Get.width,
       color: Colors.white,
@@ -82,7 +82,14 @@ class FoodDetail extends StatelessWidget {
             itemCount: report!.length,
             itemBuilder: (context, index) {
               return InkWell(
-                onTap: () => Get.toNamed('/merchant_detail'),
+                onTap: () {
+                  Get.toNamed('/merchant_detail', arguments: {
+                    'image': foodDetailController.listImageFreeDelivery[index],
+                    'merchant_name': foodDetailController.listStoreFreeDelivery[index],
+                    'time': foodDetailController.listTimeFreeDelivery[index],
+                    'delivery': '0.00'
+                  });
+                },
                 child: categoryStoreFreeDeliveryItems(
                   title: foodDetailController.listStoreFreeDelivery[index],
                   image: foodDetailController.listImageFreeDelivery[index],
@@ -209,12 +216,22 @@ class FoodDetail extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: report!.length,
             itemBuilder: (context, index) {
-              return categoryStoreDrinkItems(
-                title: foodDetailController.listStoreDrink[index],
-                image: foodDetailController.listImageDrink[index],
-                category: foodDetailController.listStoreCategoryDrink[index],
-                time: foodDetailController.listTimeDrink[index],
-                delivery: foodDetailController.listDeliveryFeeDrink[index],
+              return InkWell(
+                onTap: () {
+                  Get.toNamed('/merchant_detail', arguments: {
+                    'image': foodDetailController.listImageDrink[index],
+                    'merchant_name': foodDetailController.listStoreDrink[index],
+                    'time': foodDetailController.listTimeDrink[index],
+                    'delivery': foodDetailController.listDeliveryFeeDrink[index],
+                  });
+                },
+                child: categoryStoreDrinkItems(
+                  title: foodDetailController.listStoreDrink[index],
+                  image: foodDetailController.listImageDrink[index],
+                  category: foodDetailController.listStoreCategoryDrink[index],
+                  time: foodDetailController.listTimeDrink[index],
+                  delivery: foodDetailController.listDeliveryFeeDrink[index],
+                ),
               );
             },
           ),
@@ -411,12 +428,22 @@ class FoodDetail extends StatelessWidget {
           scrollDirection: Axis.vertical,
           itemCount: report!.length,
           itemBuilder: (context, index) {
-            return restaurantItems(
-              title: foodDetailController.listAllStore[index],
-              image: foodDetailController.listAllImage[index],
-              category: foodDetailController.listAllStoreCategory[index],
-              time: foodDetailController.listAllTime[index],
-              delivery: foodDetailController.listAllDeliveryFee[index],
+            return InkWell(
+              onTap: () {
+                Get.toNamed('/merchant_detail', arguments: {
+                  'image': foodDetailController.listAllImage[index],
+                  'merchant_name': foodDetailController.listAllStore[index],
+                  'time': foodDetailController.listAllTime[index],
+                  'delivery': foodDetailController.listAllDeliveryFee[index],
+                });
+              },
+              child: restaurantItems(
+                title: foodDetailController.listAllStore[index],
+                image: foodDetailController.listAllImage[index],
+                category: foodDetailController.listAllStoreCategory[index],
+                time: foodDetailController.listAllTime[index],
+                delivery: foodDetailController.listAllDeliveryFee[index],
+              ),
             );
           },
         );

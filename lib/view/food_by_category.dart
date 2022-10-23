@@ -130,12 +130,22 @@ class FoodByCategory extends StatelessWidget {
           scrollDirection: Axis.vertical,
           itemCount: report!.length,
           itemBuilder: (context, index) {
-            return restaurantItems(
-              title: controller.listStore[index],
-              image: controller.listImage[index],
-              category: controller.listCategory[index],
-              time: controller.listTime[index],
-              delivery: controller.listDeliveryFee[index],
+            return InkWell(
+              onTap: () {
+                Get.toNamed('/merchant_detail', arguments: {
+                  'image': controller.listImage[index],
+                  'merchant_name': controller.listStore[index],
+                  'time': controller.listTime[index],
+                  'delivery': controller.listDeliveryFee[index],
+                });
+              },
+              child: restaurantItems(
+                title: controller.listStore[index],
+                image: controller.listImage[index],
+                category: controller.listCategory[index],
+                time: controller.listTime[index],
+                delivery: controller.listDeliveryFee[index],
+              ),
             );
           },
         );
