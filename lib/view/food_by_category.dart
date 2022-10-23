@@ -25,7 +25,7 @@ class FoodByCategory extends StatelessWidget {
       backgroundColor: Colors.white60,
       title: Text(controller.title.value, style: const TextStyle(color: Colors.black)),
       leading: InkWell(
-        onTap: () => Get.offAllNamed('/home'),
+        onTap: () => Get.back(),
         child: const Padding(
           padding: EdgeInsets.only(left: 10),
           child: Icon(Icons.arrow_back_ios, color: Colors.black, size: 32),
