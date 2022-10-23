@@ -23,7 +23,8 @@ class FoodByCategory extends StatelessWidget {
     return AppBar(
       elevation: 0,
       backgroundColor: Colors.white60,
-      title: Text(controller.title.value, style: const TextStyle(color: Colors.black)),
+      title: Text(controller.title.value,
+          style: const TextStyle(color: Colors.black)),
       leading: InkWell(
         onTap: () => Get.back(),
         child: const Padding(
@@ -39,6 +40,7 @@ class FoodByCategory extends StatelessWidget {
       ],
     );
   }
+
   Widget get getBody {
     return Column(
       children: [
@@ -77,7 +79,8 @@ class FoodByCategory extends StatelessWidget {
                         controller.selectedIndex.value = index;
                         controller.getMerchantByDetail();
                       },
-                      child: titleItems(controller.listSubCategory[index], index),
+                      child:
+                          titleItems(controller.listSubCategory[index], index),
                     );
                   },
                 ),
@@ -88,22 +91,26 @@ class FoodByCategory extends StatelessWidget {
       }
     });
   }
+
   Widget titleItems(String text, int index) {
     return Obx(() => Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: index == controller.selectedIndex.value ? Colors.red : Colors.transparent,
-            width: 3,
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: index == controller.selectedIndex.value
+                    ? Colors.blue
+                    : Colors.transparent,
+                width: 3,
+              ),
+            ),
           ),
-        ),
-      ),
-      child: Text(text, style: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w500,
-      )),
-    ));
+          child: Text(text,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              )),
+        ));
   }
 
   Widget get buildAllRestaurant {
@@ -116,6 +123,7 @@ class FoodByCategory extends StatelessWidget {
       ),
     );
   }
+
   Widget listRestaurantItems() {
     return Obx(() {
       final status = controller.storeData.status;
@@ -152,7 +160,13 @@ class FoodByCategory extends StatelessWidget {
       }
     });
   }
-  Widget restaurantItems({required String title,required String image, required String time, required String category, required String delivery}) {
+
+  Widget restaurantItems(
+      {required String title,
+      required String image,
+      required String time,
+      required String category,
+      required String delivery}) {
     return Container(
       width: Get.width,
       height: 260,
@@ -194,7 +208,8 @@ class FoodByCategory extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
-            child: Text(title,
+            child: Text(
+              title,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -206,11 +221,13 @@ class FoodByCategory extends StatelessWidget {
             margin: const EdgeInsets.only(left: 3, top: 5),
             child: Row(
               children: [
-                Icon(Icons.sell, size: 20, color: Colors.black.withOpacity(0.4)),
-                Text(' • $category', style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 16,
-                )),
+                Icon(Icons.sell,
+                    size: 20, color: Colors.black.withOpacity(0.4)),
+                Text(' • $category',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.4),
+                      fontSize: 16,
+                    )),
               ],
             ),
           ),
@@ -218,15 +235,23 @@ class FoodByCategory extends StatelessWidget {
             margin: const EdgeInsets.only(left: 3, top: 5),
             child: Row(
               children: [
-                delivery == '0.00' ? const Icon(Icons.local_shipping, size: 20, color: Colors.blue) : Icon(Icons.local_shipping, size: 20, color: Colors.black.withOpacity(0.4)),
-                delivery == '0.00' ? const Text(' Free delivery', style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                )) : Text(' \$ $delivery', style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 16,
-                )),
+                delivery == '0.00'
+                    ? const Icon(Icons.local_shipping,
+                        size: 20, color: Colors.blue)
+                    : Icon(Icons.local_shipping,
+                        size: 20, color: Colors.black.withOpacity(0.4)),
+                delivery == '0.00'
+                    ? const Text(' Free delivery',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ))
+                    : Text(' \$ $delivery',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.4),
+                          fontSize: 16,
+                        )),
               ],
             ),
           ),
@@ -235,11 +260,12 @@ class FoodByCategory extends StatelessWidget {
       ),
     );
   }
-  Widget titleTextWidget(String text, double size) {
-    return Text(text, style: TextStyle(
-      fontWeight: FontWeight.w500,
-      fontSize: size,
-    ));
-  }
 
+  Widget titleTextWidget(String text, double size) {
+    return Text(text,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: size,
+        ));
+  }
 }
