@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat_customer/controller/merchant_detail_controller.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
@@ -12,16 +13,22 @@ class OrderController extends GetxController {
   RemoteData<List> get merchantDetailData => _merchantDetailData.value;
 
   var merchantName = '';
+  var deliveryFee = '';
 
   var arrayImageOrder = <String>[];
   var arrayNameOrder = <String>[];
   var arrayQtyOrder = <String>[];
   var arrayPriceOrder = <String>[];
 
+  var subTotalPrice = 0.0.obs;
+  var totalPrice = 0.0.obs;
+
   @override
   void onInit() {
     super.onInit();
     merchantName = Get.arguments['merchant_name'];
+    deliveryFee = Get.arguments['fee'];
+
     getItemOrder();
     getPriceOrder();
   }
@@ -54,7 +61,17 @@ class OrderController extends GetxController {
               arrayPriceOrder.add(total.toStringAsFixed(2));
 
               if (i + 1 == arrayNameOrder.length) {
-                _merchantDetailData.value = RemoteData<List<String>>(status: RemoteDataStatus.success, data: arrayNameOrder);
+
+                for (int i = 0 ; i < arrayPriceOrder.length ; i++) {
+                  double tempTotal = double.parse(arrayPriceOrder[i]);
+                  subTotalPrice.value = subTotalPrice.value + tempTotal;
+                }
+
+                if (i + 1 == arrayPriceOrder.length) {
+                  totalPrice.value = subTotalPrice.value + double.parse(deliveryFee);
+
+                  _merchantDetailData.value = RemoteData<List<String>>(status: RemoteDataStatus.success, data: arrayNameOrder);
+                }
               }
             }
           }

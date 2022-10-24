@@ -14,16 +14,22 @@ class Home extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white.withOpacity(0.9),
-        appBar: null,
+        appBar: appBar,
         body: getBody,
       ),
     );
   }
 
+  final appBar = AppBar(
+    elevation: 0,
+    title: const Text('Home'),
+    backgroundColor: Colors.blue.withOpacity(0.8),
+  );
   Widget get getBody {
     return SingleChildScrollView(
       child: Column(
         children: [
+          const SizedBox(height: 10),
           buildCardFood,
           buildCategory,
         ],
@@ -115,7 +121,7 @@ class Home extends StatelessWidget {
       } else {
         final report = homeController.cuisinesData.data;
         return SizedBox(
-          height: 150,
+          height: 140,
           child: ListView.builder(
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
