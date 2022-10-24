@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat_customer/controller/merchant_detail_controller.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
