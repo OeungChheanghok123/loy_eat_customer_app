@@ -15,6 +15,8 @@ class OrderController extends GetxController {
   var merchantName = '';
   var deliveryFee = '';
 
+  var arrayNameIsEmpty = false.obs;
+
   var arrayImageOrder = <String>[];
   var arrayNameOrder = <String>[];
   var arrayQtyOrder = <String>[];
@@ -34,6 +36,9 @@ class OrderController extends GetxController {
   }
 
   void getItemOrder() {
+    arrayImageOrder.clear();
+    arrayNameOrder.clear();
+    arrayQtyOrder.clear();
     for (int i = 0 ; i < merchantController.arrayMapOrder.length ; i++) {
       arrayImageOrder.add(merchantController.arrayMapOrder[i]['image']);
       arrayNameOrder.add(merchantController.arrayMapOrder[i]['product_name']);
@@ -41,41 +46,51 @@ class OrderController extends GetxController {
     }
     _merchantDetailData.value = RemoteData<List<String>>(status: RemoteDataStatus.success, data: arrayNameOrder);
   }
-
   void getPriceOrder() {
+    arrayPriceOrder.clear();
+    subTotalPrice.value = 0.0;
+
     final status = merchantDetailData.status;
     if (status == RemoteDataStatus.success) {
       _merchantDetailData.value = RemoteData<List<String>>(status: RemoteDataStatus.processing, data: null);
 
-      for (int i = 0 ; i < arrayNameOrder.length ; i++) {
-        String name = arrayNameOrder[i];
+      if (arrayNameOrder.isEmpty) {
+        arrayNameIsEmpty.value = true;
+        merchantController.canOrder.value = false;
+        debugPrint('arrayNameIsEmpty.value: ${arrayNameIsEmpty.value}');
+        _merchantDetailData.value = RemoteData<List<String>>(status: RemoteDataStatus.success, data: null);
+      }
+      else {
+        for (int i = 0 ; i < arrayNameOrder.length ; i++) {
+          String name = arrayNameOrder[i];
 
-        final product = productCollection.where('product_name', isEqualTo: name).snapshots();
-        product.listen((result) {
-          if (result.docs.isNotEmpty) {
-            for (var data in result.docs) {
-              var tempPrice = data.data()['price'];
-              var tempQty = arrayQtyOrder[i];
+          final product = productCollection.where('product_name', isEqualTo: name).snapshots();
+          product.listen((result) {
+            if (result.docs.isNotEmpty) {
+              for (var data in result.docs) {
+                var tempPrice = data.data()['price'];
+                var tempQty = arrayQtyOrder[i];
 
-              double total = double.parse(tempPrice) * int.parse(tempQty);
-              arrayPriceOrder.add(total.toStringAsFixed(2));
+                double total = double.parse(tempPrice) * int.parse(tempQty);
+                arrayPriceOrder.add(total.toStringAsFixed(2));
 
-              if (i + 1 == arrayNameOrder.length) {
+                if (i + 1 == arrayNameOrder.length) {
 
-                for (int i = 0 ; i < arrayPriceOrder.length ; i++) {
-                  double tempTotal = double.parse(arrayPriceOrder[i]);
-                  subTotalPrice.value = subTotalPrice.value + tempTotal;
-                }
+                  for (int i = 0 ; i < arrayPriceOrder.length ; i++) {
+                    double tempTotal = double.parse(arrayPriceOrder[i]);
+                    subTotalPrice.value = subTotalPrice.value + tempTotal;
+                  }
 
-                if (i + 1 == arrayPriceOrder.length) {
-                  totalPrice.value = subTotalPrice.value + double.parse(deliveryFee);
+                  if (i + 1 == arrayPriceOrder.length) {
+                    totalPrice.value = subTotalPrice.value + double.parse(deliveryFee);
 
-                  _merchantDetailData.value = RemoteData<List<String>>(status: RemoteDataStatus.success, data: arrayNameOrder);
+                    _merchantDetailData.value = RemoteData<List<String>>(status: RemoteDataStatus.success, data: arrayNameOrder);
+                  }
                 }
               }
             }
-          }
-        });
+          });
+        }
       }
     }
   }

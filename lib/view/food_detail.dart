@@ -30,11 +30,9 @@ class FoodDetail extends StatelessWidget {
     ),
     actions: [
       InkWell(
-        onTap: () {
-          Get.toNamed('/order');
-        },
+        onTap: () {},
         child: Container(
-          margin: const EdgeInsets.only(right: 10),
+          padding: const EdgeInsets.only(right: 15, left: 15),
           child: const Icon(Icons.shopping_cart, size: 32, color: Colors.black),
         ),
       ),

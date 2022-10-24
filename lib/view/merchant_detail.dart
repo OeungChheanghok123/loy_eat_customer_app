@@ -31,23 +31,32 @@ class MerchantDetail extends StatelessWidget {
   }
 
   Widget get showBottomSheet {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 25),
-      child: Container(
-        width: Get.width,
-        margin: const EdgeInsets.symmetric(horizontal: 25),
-        child: ElevatedButton(
-          onPressed: () {
-            Get.toNamed('/order', arguments: {'merchant_name': controller.title.value, 'fee': controller.fee.value});
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Colors.blue.withOpacity(0.8),
-            onPrimary: Colors.white,
+    return Obx(() {
+      final status = controller.productItemData.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else {
+        return controller.canOrder.value
+            ? Padding(
+          padding: const EdgeInsets.only(bottom: 25),
+          child: Container(
+            width: Get.width,
+            margin: const EdgeInsets.symmetric(horizontal: 25),
+            child: ElevatedButton(
+              onPressed: () => controller.goToPageOrder(),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue.withOpacity(0.8),
+                onPrimary: Colors.white,
+              ),
+              child: const Text('Order now'),
+            ),
           ),
-          child: const Text('Order now'),
-        ),
-      ),
-    );
+        )
+            : const SizedBox() ;
+      }
+    });
   }
 
   Widget get buildMerchantDetail {
@@ -297,12 +306,11 @@ class MerchantDetail extends StatelessWidget {
           ),
 
           // button add or increase decrease
-          Positioned(
+          Positioned (
             right: 5,
             bottom: 2,
             child: controller.arrayProductQty[index].toString() != "0"
-                ? buttonIncreaseAndDecrease(
-                    (controller.arrayProductQty[index]).toString(), index)
+                ? buttonIncreaseAndDecrease((controller.arrayProductQty[index]).toString(), index)
                 : buttonAdd(index),
           ),
         ],
@@ -346,7 +354,6 @@ class MerchantDetail extends StatelessWidget {
       ],
     );
   }
-
   Widget buttonAdd(int index) {
     return InkWell(
       onTap: () {

@@ -129,11 +129,6 @@ class Home extends StatelessWidget {
           title: const Text('Invite friends'),
           onTap: () {},
         ),
-        ListTile(
-          leading: const Icon(Icons.logout),
-          title: const Text('Log out'),
-          onTap: () {},
-        ),
       ],
     );
   }

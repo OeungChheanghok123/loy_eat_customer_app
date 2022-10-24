@@ -27,6 +27,9 @@ class MerchantDetailController extends GetxController {
   final _productItemData = RemoteData<List>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List> get productItemData => _productItemData.value;
 
+  final _arrayMapOrderData = RemoteData<List>(status: RemoteDataStatus.processing, data: null).obs;
+  RemoteData<List> get arrayMapOrderData => _arrayMapOrderData.value;
+
   final merchantCollection = FirebaseFirestore.instance.collection('merchants');
   final productCollection = FirebaseFirestore.instance.collection('products');
 
@@ -69,6 +72,10 @@ class MerchantDetailController extends GetxController {
     });
   }
 
+  void goToPageOrder() {
+    Get.toNamed('/order', arguments: {'merchant_name': title.value, 'fee': fee.value});
+  }
+
   void updateQty() {
     _productItemData.value = RemoteData<List>(status: RemoteDataStatus.processing, data: arrayProductName);
 
@@ -101,7 +108,6 @@ class MerchantDetailController extends GetxController {
 
     qty.value = int.parse(arrayProductQty[selectedIndex.value]);
     arrayProductQty[selectedIndex.value] = (qty - 1).toString();
-
 
     int index = arrayMapOrder.indexWhere((item) => item['product_name'] == arrayProductName[selectedIndex.value]);
 

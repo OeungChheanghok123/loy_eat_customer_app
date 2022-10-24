@@ -222,12 +222,12 @@ class FoodByCategory extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.sell,
-                    size: 20, color: Colors.black.withOpacity(0.4)),
+                    size: 20, color: Colors.black.withOpacity(0.4),),
                 Text(' • $category',
                     style: TextStyle(
                       color: Colors.black.withOpacity(0.4),
                       fontSize: 16,
-                    )),
+                    ),),
               ],
             ),
           ),
@@ -237,21 +237,21 @@ class FoodByCategory extends StatelessWidget {
               children: [
                 delivery == '0.00'
                     ? const Icon(Icons.local_shipping,
-                        size: 20, color: Colors.blue)
+                        size: 20, color: Colors.blue,)
                     : Icon(Icons.local_shipping,
-                        size: 20, color: Colors.black.withOpacity(0.4)),
+                        size: 20, color: Colors.black.withOpacity(0.4),),
                 delivery == '0.00'
                     ? const Text(' Free delivery',
                         style: TextStyle(
                           color: Colors.blue,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                        ))
+                        ),)
                     : Text(' \$ $delivery',
                         style: TextStyle(
                           color: Colors.black.withOpacity(0.4),
                           fontSize: 16,
-                        )),
+                        ),),
               ],
             ),
           ),
@@ -266,6 +266,6 @@ class FoodByCategory extends StatelessWidget {
         style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: size,
-        ));
+        ),);
   }
 }

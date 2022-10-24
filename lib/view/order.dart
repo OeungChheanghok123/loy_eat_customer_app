@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat_customer/controller/merchant_detail_controller.dart';
 import 'package:loy_eat_customer/controller/order_controller.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
 import 'package:loy_eat_customer/view/screen_widget.dart';
@@ -8,6 +9,7 @@ class Order extends StatelessWidget {
   Order({Key? key}) : super(key: key);
 
   final controller = Get.put(OrderController());
+  final merchantController = Get.put(MerchantDetailController());
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +34,30 @@ class Order extends StatelessWidget {
   );
 
   Widget get getBody {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          paymentMethod,
-          merchantDetail,
-          deliveryFee,
-          otherCoupon,
-        ],
-      ),
-    );
+    return Obx(() {
+      final status = merchantController.productItemData.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else {
+        return controller.arrayNameIsEmpty.value
+            ? const Center(child: Text('No order here.', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)))
+            : SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              paymentMethod,
+              merchantDetail,
+              deliveryFee,
+              otherCoupon,
+              const SizedBox(height: 100),
+            ],
+          ),
+        ) ;
+      }
+    });
   }
 
   Widget get getBottonOrder {
@@ -53,7 +68,7 @@ class Order extends StatelessWidget {
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
       } else {
-        return Container(
+        return controller.arrayNameIsEmpty.value ? const SizedBox() : Container(
           height: 50,
           width: Get.width,
           margin: const EdgeInsets.fromLTRB(20, 15, 20, 30),
@@ -165,76 +180,28 @@ class Order extends StatelessWidget {
   }
   Widget orderItem() {
     return Obx(() {
-      final status = controller.merchantDetailData.status;
+      final status = merchantController.productItemData.status;
       if (status == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
       } else {
-        final report = controller.merchantDetailData.data;
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: report!.length,
-          itemBuilder: (context, index) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        image: AssetImage(controller.arrayImageOrder[index]),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(''),
-                          Text(controller.arrayNameOrder[index], style: const TextStyle(
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 14,
-                          ),),
-                          Text('pcs', style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black.withOpacity(0.3),
-                          ),),
-                          const Text(''),
-                          Text('x${controller.arrayQtyOrder[index]}', style: const TextStyle(
-                            fontSize: 14,
-                          ),),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(''),
-                        const Text(''),
-                        const Text(''),
-                        const Text(''),
-                        Text('\$${controller.arrayPriceOrder[index]}', style: const TextStyle(fontSize: 14, color: Colors.blue, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+        final report = merchantController.productItemData.data;
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: report!.length,
+            itemBuilder: (context, index) {
+              return merchantController.arrayProductQty[index] == '0' ? const SizedBox() : bodyItems(
+                index: index,
+                image: merchantController.arrayProductImage[index],
+                name: merchantController.arrayProductName[index],
+                price: (double.parse(merchantController.arrayProductPrice[index]) * double.parse(merchantController.arrayProductQty[index])).toStringAsFixed(2),
+              );
+            },
+          ),
         );
       }
     });
@@ -267,6 +234,76 @@ class Order extends StatelessWidget {
         );
       }
     });
+  }
+
+  Widget bodyItems({required index, required String image, required String name, required String price}) {
+    return Container(
+      width: Get.width,
+      height: 100,
+      margin: const EdgeInsets.only(bottom: 0),
+      child: Stack(
+        children: [
+          Row(
+            children: [
+              // image
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  image: DecorationImage(
+                    image: AssetImage(image),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+
+              // detail
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 15, left: 15, bottom: 5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        'pcs',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.3),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      merchantController.arrayProductQty[index].toString() != "0"
+                          ? buttonIncreaseAndDecrease((merchantController.arrayProductQty[index]).toString(), index)
+                          : buttonAdd(index),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          Positioned (
+            right: 0,
+            bottom: 13,
+            child: Text(
+              '\$ $price',
+              style: const TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget get deliveryFee {
@@ -368,6 +405,73 @@ class Order extends StatelessWidget {
           filled: true,
           fillColor: Colors.grey[200],
           contentPadding: const EdgeInsets.only(bottom: 15, left: 10),
+        ),
+      ),
+    );
+  }
+
+  Widget buttonIncreaseAndDecrease(String qty, int index) {
+    return Row(
+      children: [
+        InkWell(
+          onTap: () {
+            merchantController.selectedIndex.value = index;
+            merchantController.decreaseQty();
+            controller.getItemOrder();
+            controller.getPriceOrder();
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: const Icon(Icons.remove, color: Colors.white, size: 16),
+          ),
+        ),
+        Text(
+          '   $qty   ',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        InkWell(
+          onTap: () {
+            merchantController.selectedIndex.value = index;
+            merchantController.increaseQty();
+            controller.getItemOrder();
+            controller.getPriceOrder();
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: const Icon(Icons.add, color: Colors.white, size: 16),
+          ),
+        ),
+      ],
+    );
+  }
+  Widget buttonAdd(int index) {
+    return InkWell(
+      onTap: () {
+        merchantController.selectedIndex.value = index;
+        merchantController.updateQty();
+      },
+      child: Container(
+        width: 55,
+        height: 25,
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: const Center(
+          child: Text(
+            '  Add + ',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
     );
