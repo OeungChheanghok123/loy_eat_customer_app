@@ -13,18 +13,22 @@ class FoodDetailController extends GetxController {
   var listStoreCategoryFreeDelivery = [];
   var listTimeFreeDelivery = [];
   var listImageFreeDelivery = [];
+  var listFreeDelivery = [];
+  var listAvailableFreeDelivery = [];
 
   var listStoreDrink = [];
   var listStoreCategoryDrink = [];
   var listTimeDrink = [];
   var listImageDrink = [];
   var listDeliveryFeeDrink = [];
+  var listAvailableDrink = [];
 
   var listAllStore = [];
   var listAllStoreCategory = [];
   var listAllTime = [];
   var listAllImage = [];
   var listAllDeliveryFee = [];
+  var listAllAvailable = [];
 
   final _storeFreeDelivery = RemoteData<List>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List> get storeFreeDeliveryData => _storeFreeDelivery.value;
@@ -59,6 +63,8 @@ class FoodDetailController extends GetxController {
           listStoreCategoryFreeDelivery.add(data.data()['category'] ?? '');
           listTimeFreeDelivery.add(data.data()['time'] ?? '');
           listImageFreeDelivery.add(data.data()['image'] ?? '');
+          listFreeDelivery.add(data.data()['delivery_fee'] ?? '');
+          listAvailableFreeDelivery.add(data.data()['is_available'] ?? '');
         }
 
         _storeFreeDelivery.value = RemoteData<List>(status: RemoteDataStatus.success, data: listStoreFreeDelivery);
@@ -75,6 +81,7 @@ class FoodDetailController extends GetxController {
           listTimeDrink.add(data.data()['time'] ?? '');
           listImageDrink.add(data.data()['image'] ?? '');
           listDeliveryFeeDrink.add(data.data()['delivery_fee'] ?? '');
+          listAvailableDrink.add(data.data()['is_available'] ?? '');
         }
 
         _storeDrink.value = RemoteData<List>(status: RemoteDataStatus.success, data: listStoreDrink);
@@ -104,6 +111,7 @@ class FoodDetailController extends GetxController {
           listAllTime.add(data.data()['time'] ?? '');
           listAllImage.add(data.data()['image'] ?? '');
           listAllDeliveryFee.add(data.data()['delivery_fee'] ?? '');
+          listAllAvailable.add(data.data()['is_available'] ?? '');
         }
 
         _allStore.value = RemoteData<List>(status: RemoteDataStatus.success, data: listAllStore);

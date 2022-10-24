@@ -38,7 +38,7 @@ class MerchantDetail extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 25),
         child: ElevatedButton(
           onPressed: () {
-            Get.toNamed('/order', arguments: {'merchant_name': controller.title.value});
+            Get.toNamed('/order', arguments: {'merchant_name': controller.title.value, 'fee': controller.fee.value});
           },
           style: ElevatedButton.styleFrom(
             primary: Colors.blue.withOpacity(0.8),

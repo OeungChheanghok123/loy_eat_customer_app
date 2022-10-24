@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
 
 class HomeController extends GetxController {
+  var isLogin = false.obs;
 
   var listCuisines = [];
   var listImage = [];

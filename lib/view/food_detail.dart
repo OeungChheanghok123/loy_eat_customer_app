@@ -7,7 +7,7 @@ import 'package:loy_eat_customer/view/screen_widget.dart';
 class FoodDetail extends StatelessWidget {
   FoodDetail({Key? key}) : super(key: key);
 
-  final foodDetailController = Get.put(FoodDetailController());
+  final controller = Get.put(FoodDetailController());
 
   @override
   Widget build(BuildContext context) {
@@ -26,298 +26,63 @@ class FoodDetail extends StatelessWidget {
     title: const Text('Food delivery', style: TextStyle(color: Colors.black)),
     leading: InkWell(
       onTap: () => Get.offAllNamed('/home'),
-      child: const Icon(Icons.arrow_back, color: Colors.blue, size: 32),
+      child: const Icon(Icons.arrow_back_ios_outlined, color: Colors.black, size: 32),
     ),
     actions: [
-      Container(
-        margin: const EdgeInsets.only(right: 10),
-        child: const Icon(Icons.shopping_cart, size: 32, color: Colors.blue),
+      InkWell(
+        onTap: () {
+          Get.toNamed('/order');
+        },
+        child: Container(
+          margin: const EdgeInsets.only(right: 10),
+          child: const Icon(Icons.shopping_cart, size: 32, color: Colors.black),
+        ),
       ),
     ],
   );
   Widget get getBody {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          buildCategoryFreeDelivery,
-          buildCategoryDrink,
-          buildCategoryCuisines,
-          buildAllRestaurant,
-        ],
-      ),
+    return Column(
+      children: [
+        buildTextFieldSearch,
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                buildCategoryCuisines,
+                buildAllRestaurant,
+                buildRecentOrder,
+                buildPopular,
+                buildCategoryFreeDelivery,
+                buildCategoryDrink,
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget get buildCategoryFreeDelivery {
+  Widget get buildTextFieldSearch {
     return Container(
-      width: Get.width,
-      color: Colors.white,
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          titleTextWidget('Free delivery', 24),
-          const SizedBox(height: 10),
-          listCategoryFreeDeliveryItems(),
-        ],
-      ),
-    );
-  }
-  Widget listCategoryFreeDeliveryItems() {
-    return Obx(() {
-      final status = foodDetailController.storeFreeDeliveryData.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = foodDetailController.storeFreeDeliveryData.data;
-        return SizedBox(
-          height: 200,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: report!.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  Get.toNamed('/merchant_detail', arguments: {
-                    'image': foodDetailController.listImageFreeDelivery[index],
-                    'merchant_name': foodDetailController.listStoreFreeDelivery[index],
-                    'time': foodDetailController.listTimeFreeDelivery[index],
-                    'delivery': '0.00'
-                  });
-                },
-                child: categoryStoreFreeDeliveryItems(
-                  title: foodDetailController.listStoreFreeDelivery[index],
-                  image: foodDetailController.listImageFreeDelivery[index],
-                  category: foodDetailController.listStoreCategoryFreeDelivery[index],
-                  time: foodDetailController.listTimeFreeDelivery[index],
-                ),
-              );
-            },
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+      child: TextField(
+        autocorrect: false,
+        autofocus: false,
+        style: const TextStyle(
+          fontSize: 14,
+        ),
+        decoration: InputDecoration(
+          prefixIcon: const Icon(Icons.search, size: 32),
+          hintText: 'Search for stores and items',
+          hintStyle: TextStyle(
+            fontSize: 14,
+            color: Colors.black.withOpacity(0.4),
           ),
-        );}
-    });
-
-  }
-  Widget categoryStoreFreeDeliveryItems({required String title,required String image,required String time,required String category}) {
-    return Container(
-      width: 250,
-      margin: const EdgeInsets.only(right: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Container(
-              width: 250,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: AssetImage(image),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                width: 65,
-                height: 30,
-                margin: const EdgeInsets.only(left: 10, bottom: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Center(
-                  child: Text(
-                    '$time min',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
-            child: Text(title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 3, top: 5),
-            child: Row(
-              children: [
-                Icon(Icons.sell, size: 20, color: Colors.black.withOpacity(0.4)),
-                Text(' • $category', style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 16,
-                )),
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 3, top: 5),
-            child: Row(
-              children: const [
-                Icon(Icons.local_shipping, size: 20, color: Colors.blue),
-                Text(' Free delivery', style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                )),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget get buildCategoryDrink {
-    return Container(
-      width: Get.width,
-      color: Colors.white,
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          titleTextWidget('Drinks', 24),
-          const SizedBox(height: 10),
-          listCategoryDrinkItems(),
-        ],
-      ),
-    );
-  }
-  Widget listCategoryDrinkItems() {
-    return Obx(() {
-      final status = foodDetailController.storeDrink.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = foodDetailController.storeDrink.data;
-        return SizedBox(
-          height: 200,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: report!.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  Get.toNamed('/merchant_detail', arguments: {
-                    'image': foodDetailController.listImageDrink[index],
-                    'merchant_name': foodDetailController.listStoreDrink[index],
-                    'time': foodDetailController.listTimeDrink[index],
-                    'delivery': foodDetailController.listDeliveryFeeDrink[index],
-                  });
-                },
-                child: categoryStoreDrinkItems(
-                  title: foodDetailController.listStoreDrink[index],
-                  image: foodDetailController.listImageDrink[index],
-                  category: foodDetailController.listStoreCategoryDrink[index],
-                  time: foodDetailController.listTimeDrink[index],
-                  delivery: foodDetailController.listDeliveryFeeDrink[index],
-                ),
-              );
-            },
-          ),
-        );
-      }
-    });
-  }
-  Widget categoryStoreDrinkItems({required String title,required String image,required String time,required String category, required String delivery}) {
-    return Container(
-      width: 250,
-      margin: const EdgeInsets.only(right: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Container(
-              width: 250,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: AssetImage(image),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                width: 65,
-                height: 30,
-                margin: const EdgeInsets.only(left: 10, bottom: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Center(
-                  child: Text(
-                    '$time min',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
-            child: Text(title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 3, top: 5),
-            child: Row(
-              children: [
-                Icon(Icons.sell, size: 20, color: Colors.black.withOpacity(0.4)),
-                Text(' • $category', style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 16,
-                )),
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 3, top: 5),
-            child: Row(
-              children: [
-                delivery == '0.00' ? const Icon(Icons.local_shipping, size: 20, color: Colors.blue) : Icon(Icons.local_shipping, size: 20, color: Colors.black.withOpacity(0.4)),
-                delivery == '0.00' ? const Text(' Free delivery', style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                )) : Text(' \$ $delivery', style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 16,
-                )),
-              ],
-            ),
-          ),
-        ],
+          border: InputBorder.none,
+          filled: true,
+          fillColor: Colors.grey[200],
+          contentPadding: const EdgeInsets.only(top: 15),
+        ),
       ),
     );
   }
@@ -326,13 +91,13 @@ class FoodDetail extends StatelessWidget {
     return Container(
       width: Get.width,
       color: Colors.white,
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.fromLTRB(15, 0, 0, 20),
+      margin: const EdgeInsets.only(top: 5),
+      padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          titleTextWidget('Cuisines', 24),
+          Container(margin: const EdgeInsets.only(left: 10), child: titleTextWidget('Cuisines', 24)),
           const SizedBox(height: 10),
           listCategory(),
         ],
@@ -341,57 +106,84 @@ class FoodDetail extends StatelessWidget {
   }
   Widget listCategory() {
     return Obx(() {
-      final status = foodDetailController.cuisinesData.status;
+      final status = controller.cuisinesData.status;
       if (status == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
       } else {
-        final report = foodDetailController.cuisinesData.data;
-        return SizedBox(
-          height: 90,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: report!.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () => Get.toNamed('/food_by_category', arguments: {'title': foodDetailController.listCuisines[index]}),
-                child: categoryStore(
-                  title: foodDetailController.listCuisines[index],
-                  image: foodDetailController.listCuisinesImage[index],
-                ),
-              );
-            },
-          ),
+        final report = controller.cuisinesData.data;
+          return GridView.count(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: List.generate(report!.length, (index) {
+            return InkWell(
+              onTap: () => Get.toNamed('/food_by_category', arguments: {'title': controller.listCuisines[index]}),
+              child: categoryStore(
+                title: controller.listCuisines[index],
+                image: controller.listCuisinesImage[index],
+              ),
+            );
+          }),
         );
+
+        // return SizedBox(
+        //   height: 90,
+        //   child: ListView.builder(
+        //     shrinkWrap: true,
+        //     scrollDirection: Axis.horizontal,
+        //     itemCount: report!.length,
+        //     itemBuilder: (context, index) {
+        //       return InkWell(
+        //         onTap: () => Get.toNamed('/food_by_category', arguments: {'title': foodDetailController.listCuisines[index]}),
+        //         child: categoryStore(
+        //           title: foodDetailController.listCuisines[index],
+        //           image: foodDetailController.listCuisinesImage[index],
+        //         ),
+        //       );
+        //     },
+        //   ),
+        // );
       }
     });
   }
   Widget categoryStore({required String image, required String title}) {
     return Container(
-      width: 100,
-      margin: const EdgeInsets.only(right: 20),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white, width: 1),
-        image: DecorationImage(
-          image: AssetImage(image),
-          fit: BoxFit.cover,
-          opacity: 0.6,
-        ),
-      ),
-      alignment: Alignment.bottomLeft,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Text(title,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
+      margin: const EdgeInsets.only(right: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 95,
+            height: 95,
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Center(
+              child: Image.asset(image,
+                fit: BoxFit.fill,
+                height: 60,
+                width: 60,
+                alignment: Alignment.center,
+              ),
+            ),
           ),
-        ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+              child: Text(title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -415,121 +207,481 @@ class FoodDetail extends StatelessWidget {
   }
   Widget listRestaurantItems() {
     return Obx(() {
-      final status = foodDetailController.allStore.status;
+      final status = controller.allStore.status;
       if (status == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
       } else {
-        final report = foodDetailController.allStore.data;
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          itemCount: report!.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () {
-                Get.toNamed('/merchant_detail', arguments: {
-                  'image': foodDetailController.listAllImage[index],
-                  'merchant_name': foodDetailController.listAllStore[index],
-                  'time': foodDetailController.listAllTime[index],
-                  'delivery': foodDetailController.listAllDeliveryFee[index],
-                });
-              },
-              child: restaurantItems(
-                title: foodDetailController.listAllStore[index],
-                image: foodDetailController.listAllImage[index],
-                category: foodDetailController.listAllStoreCategory[index],
-                time: foodDetailController.listAllTime[index],
-                delivery: foodDetailController.listAllDeliveryFee[index],
-              ),
-            );
-          },
+        final report = controller.allStore.data;
+        return SizedBox(
+          height: 250,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: report!.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  Get.toNamed('/merchant_detail', arguments: {
+                    'image': controller.listAllImage[index],
+                    'merchant_name': controller.listAllStore[index],
+                    'time': controller.listAllTime[index],
+                    'delivery': controller.listAllDeliveryFee[index],
+                  });
+                },
+                child: restaurantItems(
+                  title: controller.listAllStore[index],
+                  image: controller.listAllImage[index],
+                  category: controller.listAllStoreCategory[index],
+                  time: controller.listAllTime[index],
+                  delivery: controller.listAllDeliveryFee[index],
+                  available: controller.listAllAvailable[index],
+                ),
+              );
+            },
+          ),
         );
       }
     });
 
   }
-  Widget restaurantItems({required String title,required String image, required String time, required String category, required String delivery}) {
+
+  Widget get buildRecentOrder {
     return Container(
       width: Get.width,
-      height: 260,
-      margin: const EdgeInsets.only(right: 10, bottom: 15),
+      color: Colors.white,
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleTextWidget('Recent order', 24),
+          const SizedBox(height: 10),
+          listRecentRestaurant(),
+        ],
+      ),
+    );
+  }
+  Widget listRecentRestaurant() {
+    return Obx(() {
+      final status = controller.allStore.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else {
+        final report = controller.allStore.data;
+        return SizedBox(
+          height: 250,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: report!.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  Get.toNamed('/merchant_detail', arguments: {
+                    'image': controller.listAllImage[index],
+                    'merchant_name': controller.listAllStore[index],
+                    'time': controller.listAllTime[index],
+                    'delivery': controller.listAllDeliveryFee[index],
+                  });
+                },
+                child: restaurantItems(
+                  title: controller.listAllStore[index],
+                  image: controller.listAllImage[index],
+                  category: controller.listAllStoreCategory[index],
+                  time: controller.listAllTime[index],
+                  delivery: controller.listAllDeliveryFee[index],
+                  available: controller.listAllAvailable[index],
+                ),
+              );
+            },
+          ),
+        );
+      }
+    });
+
+  }
+
+  Widget get buildPopular {
+    return Container(
+      width: Get.width,
+      color: Colors.white,
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleTextWidget('Popular', 24),
+          const SizedBox(height: 10),
+          listRestaurantItems(),
+        ],
+      ),
+    );
+  }
+  Widget listPopularRestaurant() {
+    return Obx(() {
+      final status = controller.allStore.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else {
+        final report = controller.allStore.data;
+        return SizedBox(
+          height: 250,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: report!.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  Get.toNamed('/merchant_detail', arguments: {
+                    'image': controller.listAllImage[index],
+                    'merchant_name': controller.listAllStore[index],
+                    'time': controller.listAllTime[index],
+                    'delivery': controller.listAllDeliveryFee[index],
+                  });
+                },
+                child: restaurantItems(
+                  title: controller.listAllStore[index],
+                  image: controller.listAllImage[index],
+                  category: controller.listAllStoreCategory[index],
+                  time: controller.listAllTime[index],
+                  delivery: controller.listAllDeliveryFee[index],
+                  available: controller.listAllAvailable[index],
+                ),
+              );
+            },
+          ),
+        );
+      }
+    });
+
+  }
+
+  Widget get buildCategoryFreeDelivery {
+    return Container(
+      width: Get.width,
+      color: Colors.white,
+      padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleTextWidget('Free delivery', 24),
+          const SizedBox(height: 10),
+          listCategoryFreeDeliveryItems(),
+        ],
+      ),
+    );
+  }
+  Widget listCategoryFreeDeliveryItems() {
+    return Obx(() {
+      final status = controller.storeFreeDeliveryData.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else {
+        final report = controller.storeFreeDeliveryData.data;
+        return SizedBox(
+          height: 250,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: report!.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  Get.toNamed('/merchant_detail', arguments: {
+                    'image': controller.listImageFreeDelivery[index],
+                    'merchant_name': controller.listStoreFreeDelivery[index],
+                    'time': controller.listTimeFreeDelivery[index],
+                    'delivery': '0.00'
+                  });
+                },
+                child: restaurantItems(
+                  title: controller.listStoreFreeDelivery[index],
+                  image: controller.listImageFreeDelivery[index],
+                  category: controller.listStoreCategoryFreeDelivery[index],
+                  time: controller.listTimeFreeDelivery[index],
+                  delivery: controller.listFreeDelivery[index],
+                  available: controller.listAvailableFreeDelivery[index],
+                ),
+              );
+            },
+          ),
+        );}
+    });
+
+  }
+
+  Widget get buildCategoryDrink {
+    return Container(
+      width: Get.width,
+      color: Colors.white,
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleTextWidget('Drinks', 24),
+          const SizedBox(height: 10),
+          listCategoryDrinkItems(),
+        ],
+      ),
+    );
+  }
+  Widget listCategoryDrinkItems() {
+    return Obx(() {
+      final status = controller.storeDrink.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else {
+        final report = controller.storeDrink.data;
+          return SizedBox(
+            height: 250,
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: report!.length,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    Get.toNamed('/merchant_detail', arguments: {
+                      'image': controller.listImageDrink[index],
+                      'merchant_name': controller.listStoreDrink[index],
+                      'time': controller.listTimeDrink[index],
+                      'delivery': controller.listDeliveryFeeDrink[index],
+                    });
+                  },
+                  child: restaurantItems(
+                    title: controller.listStoreDrink[index],
+                    image: controller.listImageDrink[index],
+                    category: controller.listStoreCategoryDrink[index],
+                    time: controller.listTimeDrink[index],
+                    delivery: controller.listDeliveryFeeDrink[index],
+                    available: controller.listAvailableDrink[index],
+                  ),
+                );
+              },
+            ),
+        );
+      }
+    });
+  }
+
+  Widget restaurantItems({required String title,required String image, required String time, required String category, required String delivery, required bool available}) {
+    return Container(
+      width: 250,
+      margin: const EdgeInsets.only(right: 25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: Container(
-              alignment: Alignment.bottomLeft,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: AssetImage(image),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Container(
-                width: 65,
-                height: 30,
-                margin: const EdgeInsets.only(left: 10, bottom: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Center(
-                  child: Text(
-                    '$time min',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+            child: Stack(
+              children: [
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage(image),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    width: 65,
+                    height: 25,
+                    margin: const EdgeInsets.only(left: 10, bottom: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '$time min',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
-            child: Text(title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 3, top: 5),
-            child: Row(
-              children: [
-                Icon(Icons.sell, size: 20, color: Colors.black.withOpacity(0.4)),
-                Text(' • $category', style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 16,
-                )),
+                Positioned(
+                  top: 5,
+                  right: 10,
+                  child: Container(
+                    width: 25,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.favorite_outline_outlined, size: 16),
+                    ),
+                  ),
+                ),
+                available ? const SizedBox() : Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: InkWell(
+                    onTap: (){},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text('The shop now is closed.',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(left: 3, top: 5),
-            child: Row(
-              children: [
-                delivery == '0.00' ? const Icon(Icons.local_shipping, size: 20, color: Colors.blue) : Icon(Icons.local_shipping, size: 20, color: Colors.black.withOpacity(0.4)),
-                delivery == '0.00' ? const Text(' Free delivery', style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                )) : Text(' \$ $delivery', style: TextStyle(
-                  color: Colors.black.withOpacity(0.4),
-                  fontSize: 16,
-                )),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
+          available
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
+                      child: Text(title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 3, top: 5),
+                      child: Row(
+                        children: [
+                          Icon(Icons.sell,
+                              size: 20, color: Colors.black.withOpacity(0.4)),
+                          Text(' • $category',
+                              style: TextStyle(
+                                color: Colors.black.withOpacity(0.4),
+                                fontSize: 16,
+                              )),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 3, top: 5),
+                      child: Row(
+                        children: [
+                          delivery == '0.00'
+                              ? const Icon(Icons.local_shipping,
+                                  size: 20, color: Colors.blue)
+                              : Icon(Icons.local_shipping,
+                                  size: 20,
+                                  color: Colors.black.withOpacity(0.4)),
+                          delivery == '0.00'
+                              ? const Text(' Free delivery',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ))
+                              : Text(' \$ $delivery',
+                                  style: TextStyle(
+                                    color: Colors.black.withOpacity(0.4),
+                                    fontSize: 16,
+                                  )),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : InkWell(
+                  onTap: () {},
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(left: 3, top: 5),
+                        child: Row(
+                          children: [
+                            Icon(Icons.sell,
+                                size: 20, color: Colors.black.withOpacity(0.4)),
+                            Text(' • $category',
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.4),
+                                  fontSize: 16,
+                                )),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(left: 3, top: 5),
+                        child: Row(
+                          children: [
+                            delivery == '0.00'
+                                ? const Icon(Icons.local_shipping,
+                                    size: 20, color: Colors.blue)
+                                : Icon(Icons.local_shipping,
+                                    size: 20,
+                                    color: Colors.black.withOpacity(0.4)),
+                            delivery == '0.00'
+                                ? const Text(' Free delivery',
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ))
+                                : Text(' \$ $delivery',
+                                    style: TextStyle(
+                                      color: Colors.black.withOpacity(0.4),
+                                      fontSize: 16,
+                                    )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
         ],
       ),
     );

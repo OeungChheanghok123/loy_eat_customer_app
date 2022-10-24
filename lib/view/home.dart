@@ -7,23 +7,39 @@ import 'package:loy_eat_customer/view/screen_widget.dart';
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
-  final homeController = Get.put(HomeController());
+  final controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white.withOpacity(0.9),
-        appBar: null,
+        appBar: getAppBar,
         body: getBody,
+        drawer: getDrawer,
       ),
     );
   }
 
+  final getAppBar = AppBar(
+    elevation: 0,
+    title: const Text('Home'),
+    backgroundColor: Colors.blue.withOpacity(0.8),
+    actions: [
+      InkWell(
+        onTap: () {},
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 15),
+          child: const Icon(Icons.favorite_outline_outlined),
+        ),
+      ),
+    ],
+  );
   Widget get getBody {
     return SingleChildScrollView(
       child: Column(
         children: [
+          const SizedBox(height: 10),
           buildCardFood,
           buildCategory,
         ],
@@ -31,9 +47,121 @@ class Home extends StatelessWidget {
     );
   }
 
+  Widget get getDrawer {
+    return Drawer(
+      child: controller.isLogin.value ? drawerLogInItems : drawerItems,
+    );
+  }
+  Widget get drawerLogInItems {
+    return ListView(
+      children: [
+        drawerLoginHeader,
+        ListTile(
+          leading: const Icon(Icons.favorite_outline_outlined),
+          title: const Text('Favourites'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.person_outline),
+          title: const Text('Profile'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.location_on_outlined),
+          title: const Text('Addresses'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.settings),
+          title: const Text('Settings'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.help_outline),
+          title: const Text('Help center'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.person_add_alt_1_outlined),
+          title: const Text('Invite friends'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.logout),
+          title: const Text('Log out'),
+          onTap: () {},
+        ),
+      ],
+    );
+  }
+  Widget get drawerLoginHeader {
+    return const UserAccountsDrawerHeader(
+      accountName: Text('Chheanghok', style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 16,
+      ),),
+      accountEmail: Text('098496050', style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 16,
+      ),),
+      currentAccountPicture: CircleAvatar(
+        backgroundColor: Colors.blue,
+        child: FlutterLogo(size: 42.0),
+      ),
+    );
+  }
+  Widget get drawerItems {
+    return ListView(
+      children: [
+        drawerHeader,
+        ListTile(
+          leading: const Icon(Icons.settings),
+          title: const Text('Settings'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.help_outline),
+          title: const Text('Help center'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.person_add_alt_1_outlined),
+          title: const Text('Invite friends'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.logout),
+          title: const Text('Log out'),
+          onTap: () {},
+        ),
+      ],
+    );
+  }
+  Widget get drawerHeader {
+    return UserAccountsDrawerHeader(
+      accountName: const Text(''),
+      accountEmail: InkWell(
+        onTap: () {
+          debugPrint('Sign up / Log in');
+        },
+        child: Container(
+          width: Get.width,
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: const Text('Sign up / Log in', style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),),
+        ),
+      ),
+      currentAccountPicture: const CircleAvatar(
+        backgroundColor: Colors.blue,
+      ),
+    );
+  }
+
   Widget get buildCardFood {
     return InkWell(
-      onTap: () => homeController.foodDeliveryButton(),
+      onTap: () => controller.foodDeliveryButton(),
       child: Container(
         width: Get.width,
         height: 150,
@@ -98,6 +226,7 @@ class Home extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          buildRecentOrder,
           titleTextWidget('Cuisines', 24),
           const SizedBox(height: 20),
           listCategory(),
@@ -107,55 +236,54 @@ class Home extends StatelessWidget {
   }
   Widget listCategory() {
     return Obx(() {
-      final status = homeController.cuisinesData.status;
+      final status = controller.cuisinesData.status;
       if (status == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
       } else {
-        final report = homeController.cuisinesData.data;
-        return SizedBox(
-          height: 150,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: report!.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () => Get.toNamed('/food_by_category', arguments: {'title': homeController.listCuisines[index]}),
-                child: categoryStore(
-                  title: homeController.listCuisines[index],
-                  image: homeController.listImage[index],
-                ),
-              );
-            },
-          ),
+        final report = controller.cuisinesData.data;
+          return SizedBox(
+            height: 150,
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: report!.length,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () => Get.toNamed('/food_by_category', arguments: {'title': controller.listCuisines[index]}),
+                  child: categoryStore(
+                    title: controller.listCuisines[index],
+                    image: controller.listImage[index],
+                  ),
+                );
+              },
+            ),
         );
       }
     });
   }
   Widget categoryStore({required String image, required String title}) {
     return Container(
-      width: 80,
-      margin: const EdgeInsets.only(right: 10),
+      width: 100,
+      margin: const EdgeInsets.only(right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: Container(
-              width: 70,
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: Center(
-                child: Image.asset(image,
-                  fit: BoxFit.fill,
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
-                ),
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Center(
+              child: Image.asset(image,
+                fit: BoxFit.fill,
+                height: 60,
+                width: 60,
+                alignment: Alignment.center,
               ),
             ),
           ),
@@ -174,6 +302,21 @@ class Home extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget get buildRecentOrder {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        titleTextWidget('Recent order', 24),
+        const SizedBox(height: 10),
+        listRecentRestaurant(),
+      ],
+    );
+  }
+  Widget listRecentRestaurant() {
+    return Container();
   }
 
   Widget titleTextWidget(String text, double size) {
