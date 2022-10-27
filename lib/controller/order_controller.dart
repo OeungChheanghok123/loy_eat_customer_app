@@ -157,6 +157,7 @@ class OrderController extends GetxController {
       'order_id': orderId.toString(),
       'time': time.toString(),
       'total_discount': '0.00',
+      'status': 'Pending',
     }).then((value) => debugPrint('order added'));
     await deliverCollection.add({
       'bonus': '0.00',
@@ -178,7 +179,7 @@ class OrderController extends GetxController {
     await orderDetailCollection.add({
       'order_id': orderId.toString(),
       'items': merchantController.arrayMapOrder,
-      'sub_amount': subTotalPrice.toString(),
+      'sub_amount': subTotalPrice.toStringAsFixed(2),
     }).then((value) => debugPrint('order detail added'));
 
     Get.offAllNamed('/home');
