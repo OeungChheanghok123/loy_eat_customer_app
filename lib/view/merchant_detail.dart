@@ -40,19 +40,19 @@ class MerchantDetail extends StatelessWidget {
       } else {
         return controller.canOrder.value
             ? Padding(
-          padding: const EdgeInsets.only(bottom: 25),
-          child: Container(
-            width: Get.width,
-            margin: const EdgeInsets.symmetric(horizontal: 25),
-            child: ElevatedButton(
-              onPressed: () => controller.goToPageOrder(),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blue.withOpacity(0.8),
-                onPrimary: Colors.white,
-              ),
-              child: const Text('Order now'),
-            ),
-          ),
+                padding: const EdgeInsets.only(bottom: 25),
+                child: Container(
+                  width: Get.width,
+                  margin: const EdgeInsets.symmetric(horizontal: 25),
+                  child: ElevatedButton(
+                    onPressed: () => controller.goToPageOrder(),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blue.withOpacity(0.8),
+                      onPrimary: Colors.white,
+                    ),
+                    child: const Text('Order now'),
+                  ),
+                ),
         )
             : const SizedBox() ;
       }
@@ -165,7 +165,7 @@ class MerchantDetail extends StatelessWidget {
                             color: Colors.blue.withOpacity(0.7),
                           ),
                           Text(
-                            ' 1.6km , ${controller.time.value}min | ',
+                            ' ${controller.distance.value}km , ${controller.time.value}min | ',
                             style: const TextStyle(fontSize: 14),
                           ),
                           controller.fee.value == '0.00'

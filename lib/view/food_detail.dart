@@ -125,24 +125,6 @@ class FoodDetail extends StatelessWidget {
             );
           }),
         );
-
-        // return SizedBox(
-        //   height: 90,
-        //   child: ListView.builder(
-        //     shrinkWrap: true,
-        //     scrollDirection: Axis.horizontal,
-        //     itemCount: report!.length,
-        //     itemBuilder: (context, index) {
-        //       return InkWell(
-        //         onTap: () => Get.toNamed('/food_by_category', arguments: {'title': foodDetailController.listCuisines[index]}),
-        //         child: categoryStore(
-        //           title: foodDetailController.listCuisines[index],
-        //           image: foodDetailController.listCuisinesImage[index],
-        //         ),
-        //       );
-        //     },
-        //   ),
-        // );
       }
     });
   }
@@ -226,6 +208,7 @@ class FoodDetail extends StatelessWidget {
                     'merchant_name': controller.listAllStore[index],
                     'time': controller.listAllTime[index],
                     'delivery': controller.listAllDeliveryFee[index],
+                    'distance': controller.listAllDistance[index],
                   });
                 },
                 child: restaurantItems(
@@ -285,6 +268,7 @@ class FoodDetail extends StatelessWidget {
                     'merchant_name': controller.listAllStore[index],
                     'time': controller.listAllTime[index],
                     'delivery': controller.listAllDeliveryFee[index],
+                    'distance': controller.listAllDistance[index],
                   });
                 },
                 child: restaurantItems(
@@ -344,6 +328,7 @@ class FoodDetail extends StatelessWidget {
                     'merchant_name': controller.listAllStore[index],
                     'time': controller.listAllTime[index],
                     'delivery': controller.listAllDeliveryFee[index],
+                    'distance': controller.listAllDistance[index],
                   });
                 },
                 child: restaurantItems(
@@ -401,7 +386,8 @@ class FoodDetail extends StatelessWidget {
                     'image': controller.listImageFreeDelivery[index],
                     'merchant_name': controller.listStoreFreeDelivery[index],
                     'time': controller.listTimeFreeDelivery[index],
-                    'delivery': '0.00'
+                    'delivery': '0.00',
+                    'distance': controller.listDistanceFreeDelivery[index],
                   });
                 },
                 child: restaurantItems(
@@ -460,6 +446,7 @@ class FoodDetail extends StatelessWidget {
                       'merchant_name': controller.listStoreDrink[index],
                       'time': controller.listTimeDrink[index],
                       'delivery': controller.listDeliveryFeeDrink[index],
+                      'distance': controller.listDistanceDrink[index],
                     });
                   },
                   child: restaurantItems(

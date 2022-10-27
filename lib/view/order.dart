@@ -29,7 +29,7 @@ class Order extends StatelessWidget {
     title: const Text('Submit Order', style: TextStyle(color: Colors.black)),
     leading: InkWell(
       onTap: () => Get.back(),
-      child: const Icon(Icons.arrow_back, color: Colors.blue, size: 32),
+      child: const Icon(Icons.arrow_back_ios_outlined, color: Colors.blue, size: 32),
     ),
   );
 
@@ -44,17 +44,17 @@ class Order extends StatelessWidget {
         return controller.arrayNameIsEmpty.value
             ? const Center(child: Text('No order here.', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)))
             : SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              paymentMethod,
-              merchantDetail,
-              deliveryFee,
-              otherCoupon,
-              const SizedBox(height: 100),
-            ],
-          ),
+                physics: const ClampingScrollPhysics(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    paymentMethod,
+                    merchantDetail,
+                    deliveryFee,
+                    otherCoupon,
+                    const SizedBox(height: 100),
+                  ],
+                ),
         ) ;
       }
     });
@@ -64,58 +64,58 @@ class Order extends StatelessWidget {
     return Obx(() {
       final status = controller.merchantDetailData.status;
       if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
+          return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
+          return ScreenWidgets.error;
       } else {
-        return controller.arrayNameIsEmpty.value ? const SizedBox() : Container(
-          height: 50,
-          width: Get.width,
-          margin: const EdgeInsets.fromLTRB(20, 15, 20, 30),
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(50),
-          ),
-          alignment: Alignment.center,
-          child: InkWell(
-            onTap: (){
-              debugPrint('Order Now');
-            },
-            focusColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(width: 20),
-                const Text('Total:', style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),),
-                Text('  \$ ${controller.totalPrice.value.toStringAsFixed(2)}', style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),),
-                const Spacer(),
-                Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: const Text('Order Now', style: TextStyle(
+          return controller.arrayNameIsEmpty.value ? const SizedBox() : Container(
+            height: 50,
+            width: Get.width,
+            margin: const EdgeInsets.fromLTRB(20, 15, 20, 30),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            alignment: Alignment.center,
+            child: InkWell(
+              onTap: (){
+                controller.orderNow();
+              },
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(width: 20),
+                  const Text('Total:', style: TextStyle(
                     color: Colors.white,
-                    fontSize: 14,
+                    fontSize: 12,
+                  ),),
+                  Text('  \$ ${controller.totalPrice.value.toStringAsFixed(2)}', style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),),
-                ),
-              ],
+                  const Spacer(),
+                  Container(
+                    margin: const EdgeInsets.only(right: 10),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: const Text('Order Now', style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
+          );
       }
     });
   }

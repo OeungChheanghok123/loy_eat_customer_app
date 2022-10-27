@@ -145,6 +145,7 @@ class FoodByCategory extends StatelessWidget {
                   'merchant_name': controller.listStore[index],
                   'time': controller.listTime[index],
                   'delivery': controller.listDeliveryFee[index],
+                  'distance': controller.listDistance[index],
                 });
               },
               child: restaurantItems(

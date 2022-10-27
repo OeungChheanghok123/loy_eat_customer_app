@@ -1,19 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
 
 class MerchantDetailController extends GetxController {
   var selectedIndex = 0.obs;
 
+  var merchantId = ''.obs;
   var title = ''.obs;
   var time = ''.obs;
   var fee = ''.obs;
+  var distance = ''.obs;
   var image = ''.obs;
 
   var qty = 0.obs;
 
-  var arrayProductImage = [];
+  var arrayProductId = [];
   var arrayProductName = [];
+  var arrayProductImage = [];
   var arrayProductPrice = [];
   var arrayProductQty = [];
 
@@ -45,6 +49,7 @@ class MerchantDetailController extends GetxController {
     image.value = Get.arguments['image'];
     title.value = Get.arguments['merchant_name'];
     time.value = Get.arguments['time'];
+    distance.value = Get.arguments['distance'];
     fee.value = Get.arguments['delivery'];
   }
 
@@ -54,12 +59,14 @@ class MerchantDetailController extends GetxController {
       if (result.docs.isNotEmpty) {
         for (var data in result.docs) {
           var tempMerchantID = data.data()['merchant_id'];
+          merchantId.value = tempMerchantID;
 
           final product = productCollection.where('merchant_id', isEqualTo: tempMerchantID).snapshots();
           product.listen((result) {
             if (result.docs.isNotEmpty) {
               for (var data in result.docs) {
                 arrayProductImage.add(data.data()['image'] ?? '');
+                arrayProductId.add(data.data()['product_id'] ?? '');
                 arrayProductName.add(data.data()['product_name'] ?? '');
                 arrayProductPrice.add(data.data()['price'] ?? '');
                 arrayProductQty.add('0');
@@ -73,7 +80,7 @@ class MerchantDetailController extends GetxController {
   }
 
   void goToPageOrder() {
-    Get.toNamed('/order', arguments: {'merchant_name': title.value, 'fee': fee.value});
+    Get.toNamed('/order', arguments: {'merchant_id': merchantId.value, 'merchant_name': title.value, 'fee': fee.value, 'time': time.value, 'distance': distance.value});
   }
 
   void updateQty() {
@@ -85,7 +92,8 @@ class MerchantDetailController extends GetxController {
 
     canOrder.value = true;
 
-    arrayMapOrder.add( {'image': arrayProductImage[selectedIndex.value], 'product_name': arrayProductName[selectedIndex.value], 'qty': arrayProductQty[selectedIndex.value]} );
+    arrayMapOrder.add({'image': arrayProductImage[selectedIndex.value], 'product_id': arrayProductId[selectedIndex.value], 'product_name': arrayProductName[selectedIndex.value], 'qty': arrayProductQty[selectedIndex.value], 'price': arrayProductPrice[selectedIndex.value]});
+    debugPrint('arrayMapOrder = $arrayMapOrder');
 
     _productItemData.value = RemoteData<List>(status: RemoteDataStatus.success, data: arrayProductName);
   }
@@ -99,6 +107,7 @@ class MerchantDetailController extends GetxController {
     int index = arrayMapOrder.indexWhere((item) => item['product_name'] == arrayProductName[selectedIndex.value]);
 
     arrayMapOrder[index]['qty'] = arrayProductQty[selectedIndex.value];
+    debugPrint('arrayMapOrder = $arrayMapOrder');
 
     _productItemData.value = RemoteData<List>(status: RemoteDataStatus.success, data: arrayProductName);
   }
@@ -112,6 +121,7 @@ class MerchantDetailController extends GetxController {
     int index = arrayMapOrder.indexWhere((item) => item['product_name'] == arrayProductName[selectedIndex.value]);
 
     arrayMapOrder[index]['qty'] = arrayProductQty[selectedIndex.value];
+    debugPrint('arrayMapOrder = $arrayMapOrder');
 
     if (arrayMapOrder[index]['qty'] == '0') {
       arrayMapOrder.removeAt(index);

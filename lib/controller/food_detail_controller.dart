@@ -14,6 +14,7 @@ class FoodDetailController extends GetxController {
   var listTimeFreeDelivery = [];
   var listImageFreeDelivery = [];
   var listFreeDelivery = [];
+  var listDistanceFreeDelivery = [];
   var listAvailableFreeDelivery = [];
 
   var listStoreDrink = [];
@@ -21,6 +22,7 @@ class FoodDetailController extends GetxController {
   var listTimeDrink = [];
   var listImageDrink = [];
   var listDeliveryFeeDrink = [];
+  var listDistanceDrink = [];
   var listAvailableDrink = [];
 
   var listAllStore = [];
@@ -28,6 +30,7 @@ class FoodDetailController extends GetxController {
   var listAllTime = [];
   var listAllImage = [];
   var listAllDeliveryFee = [];
+  var listAllDistance = [];
   var listAllAvailable = [];
 
   final _storeFreeDelivery = RemoteData<List>(status: RemoteDataStatus.processing, data: null).obs;
@@ -64,6 +67,7 @@ class FoodDetailController extends GetxController {
           listTimeFreeDelivery.add(data.data()['time'] ?? '');
           listImageFreeDelivery.add(data.data()['image'] ?? '');
           listFreeDelivery.add(data.data()['delivery_fee'] ?? '');
+          listDistanceFreeDelivery.add(data.data()['distance'] ?? '');
           listAvailableFreeDelivery.add(data.data()['is_available'] ?? '');
         }
 
@@ -81,6 +85,7 @@ class FoodDetailController extends GetxController {
           listTimeDrink.add(data.data()['time'] ?? '');
           listImageDrink.add(data.data()['image'] ?? '');
           listDeliveryFeeDrink.add(data.data()['delivery_fee'] ?? '');
+          listDistanceDrink.add(data.data()['distance'] ?? '');
           listAvailableDrink.add(data.data()['is_available'] ?? '');
         }
 
@@ -111,6 +116,7 @@ class FoodDetailController extends GetxController {
           listAllTime.add(data.data()['time'] ?? '');
           listAllImage.add(data.data()['image'] ?? '');
           listAllDeliveryFee.add(data.data()['delivery_fee'] ?? '');
+          listAllDistance.add(data.data()['distance'] ?? '');
           listAllAvailable.add(data.data()['is_available'] ?? '');
         }
 
