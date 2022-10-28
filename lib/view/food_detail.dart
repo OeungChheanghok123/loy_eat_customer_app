@@ -51,7 +51,6 @@ class FoodDetail extends StatelessWidget {
                 buildRecentOrder,
                 buildPopular,
                 buildCategoryFreeDelivery,
-                buildCategoryDrink,
               ],
             ),
           ),
@@ -300,20 +299,20 @@ class FoodDetail extends StatelessWidget {
         children: [
           titleTextWidget('Popular', 24),
           const SizedBox(height: 10),
-          listRestaurantItems(),
+          listPopularRestaurant(),
         ],
       ),
     );
   }
   Widget listPopularRestaurant() {
     return Obx(() {
-      final status = controller.allStore.status;
+      final status = controller.storeDrink.status;
       if (status == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
       } else {
-        final report = controller.allStore.data;
+        final report = controller.storeDrink.data;
         return SizedBox(
           height: 250,
           child: ListView.builder(
@@ -324,20 +323,20 @@ class FoodDetail extends StatelessWidget {
               return InkWell(
                 onTap: () {
                   Get.toNamed('/merchant_detail', arguments: {
-                    'image': controller.listAllImage[index],
-                    'merchant_name': controller.listAllStore[index],
-                    'time': controller.listAllTime[index],
-                    'delivery': controller.listAllDeliveryFee[index],
-                    'distance': controller.listAllDistance[index],
+                    'image': controller.listPopularStoreImage[index],
+                    'merchant_name': controller.listPopularStoreName[index],
+                    'time': controller.listPopularStoreTime[index],
+                    'delivery': controller.listPopularStoreDeliveryFee[index],
+                    'distance': controller.listPopularStoreDistance[index],
                   });
                 },
                 child: restaurantItems(
-                  title: controller.listAllStore[index],
-                  image: controller.listAllImage[index],
-                  category: controller.listAllStoreCategory[index],
-                  time: controller.listAllTime[index],
-                  delivery: controller.listAllDeliveryFee[index],
-                  available: controller.listAllAvailable[index],
+                  title: controller.listPopularStoreName[index],
+                  image: controller.listPopularStoreImage[index],
+                  category: controller.listPopularStoreCategory[index],
+                  time: controller.listPopularStoreTime[index],
+                  delivery: controller.listPopularStoreDeliveryFee[index],
+                  available: controller.listPopularStoreAvailable[index],
                 ),
               );
             },
@@ -345,7 +344,6 @@ class FoodDetail extends StatelessWidget {
         );
       }
     });
-
   }
 
   Widget get buildCategoryFreeDelivery {
@@ -406,64 +404,6 @@ class FoodDetail extends StatelessWidget {
 
   }
 
-  Widget get buildCategoryDrink {
-    return Container(
-      width: Get.width,
-      color: Colors.white,
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.fromLTRB(20, 0, 0, 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          titleTextWidget('Drinks', 24),
-          const SizedBox(height: 10),
-          listCategoryDrinkItems(),
-        ],
-      ),
-    );
-  }
-  Widget listCategoryDrinkItems() {
-    return Obx(() {
-      final status = controller.storeDrink.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = controller.storeDrink.data;
-          return SizedBox(
-            height: 250,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: report!.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    Get.toNamed('/merchant_detail', arguments: {
-                      'image': controller.listImageDrink[index],
-                      'merchant_name': controller.listStoreDrink[index],
-                      'time': controller.listTimeDrink[index],
-                      'delivery': controller.listDeliveryFeeDrink[index],
-                      'distance': controller.listDistanceDrink[index],
-                    });
-                  },
-                  child: restaurantItems(
-                    title: controller.listStoreDrink[index],
-                    image: controller.listImageDrink[index],
-                    category: controller.listStoreCategoryDrink[index],
-                    time: controller.listTimeDrink[index],
-                    delivery: controller.listDeliveryFeeDrink[index],
-                    available: controller.listAvailableDrink[index],
-                  ),
-                );
-              },
-            ),
-        );
-      }
-    });
-  }
 
   Widget restaurantItems({required String title,required String image, required String time, required String category, required String delivery, required bool available}) {
     return Container(

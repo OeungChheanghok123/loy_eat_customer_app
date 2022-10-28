@@ -17,13 +17,13 @@ class FoodDetailController extends GetxController {
   var listDistanceFreeDelivery = [];
   var listAvailableFreeDelivery = [];
 
-  var listStoreDrink = [];
-  var listStoreCategoryDrink = [];
-  var listTimeDrink = [];
-  var listImageDrink = [];
-  var listDeliveryFeeDrink = [];
-  var listDistanceDrink = [];
-  var listAvailableDrink = [];
+  var listPopularStoreName = [];
+  var listPopularStoreCategory = [];
+  var listPopularStoreTime = [];
+  var listPopularStoreImage = [];
+  var listPopularStoreDeliveryFee = [];
+  var listPopularStoreDistance = [];
+  var listPopularStoreAvailable = [];
 
   var listAllStore = [];
   var listAllStoreCategory = [];
@@ -51,48 +51,12 @@ class FoodDetailController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadMerchantFreeDelivery();
-    loadMerchantDrink();
     loadCuisines();
     loadAllMerchant();
+    loadMerchantPopular();
+    loadMerchantFreeDelivery();
   }
 
-  void loadMerchantFreeDelivery() {
-    final data = merchantCollection.where('delivery_fee', isEqualTo: '0.00').snapshots();
-    data.listen((result) {
-      if (result.docs.isNotEmpty) {
-        for (var data in result.docs) {
-          listStoreFreeDelivery.add(data.data()['merchant_name'] ?? '');
-          listStoreCategoryFreeDelivery.add(data.data()['category'] ?? '');
-          listTimeFreeDelivery.add(data.data()['time'] ?? '');
-          listImageFreeDelivery.add(data.data()['image'] ?? '');
-          listFreeDelivery.add(data.data()['delivery_fee'] ?? '');
-          listDistanceFreeDelivery.add(data.data()['distance'] ?? '');
-          listAvailableFreeDelivery.add(data.data()['is_available'] ?? '');
-        }
-
-        _storeFreeDelivery.value = RemoteData<List>(status: RemoteDataStatus.success, data: listStoreFreeDelivery);
-      }
-    });
-  }
-  void loadMerchantDrink() {
-    final data = merchantCollection.where('category', isEqualTo: 'Beverages').snapshots();
-    data.listen((result) {
-      if (result.docs.isNotEmpty) {
-        for (var data in result.docs) {
-          listStoreDrink.add(data.data()['merchant_name'] ?? '');
-          listStoreCategoryDrink.add(data.data()['category'] ?? '');
-          listTimeDrink.add(data.data()['time'] ?? '');
-          listImageDrink.add(data.data()['image'] ?? '');
-          listDeliveryFeeDrink.add(data.data()['delivery_fee'] ?? '');
-          listDistanceDrink.add(data.data()['distance'] ?? '');
-          listAvailableDrink.add(data.data()['is_available'] ?? '');
-        }
-
-        _storeDrink.value = RemoteData<List>(status: RemoteDataStatus.success, data: listStoreDrink);
-      }
-    });
-  }
   void loadCuisines() {
     final data = categoryCollection.snapshots();
     data.listen((result) {
@@ -109,6 +73,8 @@ class FoodDetailController extends GetxController {
   void loadAllMerchant() {
     final data = merchantCollection.orderBy('merchant_id').snapshots();
     data.listen((result) {
+      clearAllStore();
+
       if (result.docs.isNotEmpty) {
         for (var data in result.docs) {
           listAllStore.add(data.data()['merchant_name'] ?? '');
@@ -123,5 +89,71 @@ class FoodDetailController extends GetxController {
         _allStore.value = RemoteData<List>(status: RemoteDataStatus.success, data: listAllStore);
       }
     });
+  }
+  void loadMerchantPopular() {
+    final data = merchantCollection.orderBy('merchant_id', descending: true).limit(10).snapshots();
+    data.listen((result) {
+      if (result.docs.isNotEmpty) {
+        clearDrink();
+        for (var data in result.docs) {
+          listPopularStoreName.add(data.data()['merchant_name'] ?? '');
+          listPopularStoreCategory.add(data.data()['category'] ?? '');
+          listPopularStoreTime.add(data.data()['time'] ?? '');
+          listPopularStoreImage.add(data.data()['image'] ?? '');
+          listPopularStoreDeliveryFee.add(data.data()['delivery_fee'] ?? '');
+          listPopularStoreDistance.add(data.data()['distance'] ?? '');
+          listPopularStoreAvailable.add(data.data()['is_available'] ?? '');
+        }
+
+        _storeDrink.value = RemoteData<List>(status: RemoteDataStatus.success, data: listPopularStoreName);
+      }
+    });
+  }
+  void loadMerchantFreeDelivery() {
+    final data = merchantCollection.where('delivery_fee', isEqualTo: '0.00').snapshots();
+    data.listen((result) {
+      if (result.docs.isNotEmpty) {
+        clearFreeDelivery();
+        for (var data in result.docs) {
+          listStoreFreeDelivery.add(data.data()['merchant_name'] ?? '');
+          listStoreCategoryFreeDelivery.add(data.data()['category'] ?? '');
+          listTimeFreeDelivery.add(data.data()['time'] ?? '');
+          listImageFreeDelivery.add(data.data()['image'] ?? '');
+          listFreeDelivery.add(data.data()['delivery_fee'] ?? '');
+          listDistanceFreeDelivery.add(data.data()['distance'] ?? '');
+          listAvailableFreeDelivery.add(data.data()['is_available'] ?? '');
+        }
+
+        _storeFreeDelivery.value = RemoteData<List>(status: RemoteDataStatus.success, data: listStoreFreeDelivery);
+      }
+    });
+  }
+
+  void clearAllStore() {
+    listAllStore.clear();
+    listAllStoreCategory.clear();
+    listAllTime.clear();
+    listAllImage.clear();
+    listAllDeliveryFee.clear();
+    listAllDistance.clear();
+    listAllAvailable.clear();
+  }
+  void clearFreeDelivery() {
+    listStoreFreeDelivery.clear();
+    listStoreCategoryFreeDelivery.clear();
+    listTimeFreeDelivery.clear();
+    listImageFreeDelivery.clear();
+    listFreeDelivery.clear();
+    listDistanceFreeDelivery.clear();
+    listAvailableFreeDelivery.clear();
+  }
+  void clearDrink() {
+    listPopularStoreName.clear();
+    listPopularStoreCategory.clear();
+    listPopularStoreTime.clear();
+    listPopularStoreImage.clear();
+    listPopularStoreDeliveryFee.clear();
+    listPopularStoreDistance.clear();
+    listPopularStoreAvailable.clear();
   }
 }
