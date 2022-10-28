@@ -56,10 +56,19 @@ class FoodByCategoryController extends GetxController {
                   listSubCategory.sort();
                   _allTitleSubCategory.value = RemoteData<List>(status: RemoteDataStatus.success, data: listSubCategory);
                 }
+                else {
+                  _allTitleSubCategory.value = RemoteData<List>(status: RemoteDataStatus.none, data: null);
+                }
               }
+            }
+            else {
+              _allTitleSubCategory.value = RemoteData<List>(status: RemoteDataStatus.none, data: null);
             }
           });
         }
+      }
+      else {
+        _allTitleSubCategory.value = RemoteData<List>(status: RemoteDataStatus.none, data: null);
       }
     });
   }
@@ -77,6 +86,9 @@ class FoodByCategoryController extends GetxController {
           listDistance.add(data.data()['distance'] ?? '');
         }
         _storeData.value = RemoteData<List>(status: RemoteDataStatus.success, data: listStore);
+      }
+      else {
+        _storeData.value = RemoteData<List>(status: RemoteDataStatus.none, data: null);
       }
     });
   }

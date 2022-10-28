@@ -16,7 +16,8 @@ class MerchantDetail extends StatelessWidget {
         appBar: null,
         backgroundColor: Colors.white,
         body: getBody,
-        bottomSheet: Obx(() => controller.canOrder.value ? showBottomSheet : const SizedBox()),
+        bottomSheet: Obx(() =>
+            controller.canOrder.value ? showBottomSheet : const SizedBox()),
       ),
     );
   }
@@ -39,22 +40,19 @@ class MerchantDetail extends StatelessWidget {
         return ScreenWidgets.error;
       } else {
         return controller.canOrder.value
-            ? Padding(
-                padding: const EdgeInsets.only(bottom: 25),
-                child: Container(
-                  width: Get.width,
-                  margin: const EdgeInsets.symmetric(horizontal: 25),
-                  child: ElevatedButton(
-                    onPressed: () => controller.goToPageOrder(),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.blue.withOpacity(0.8),
-                      onPrimary: Colors.white,
-                    ),
-                    child: const Text('Order now'),
-                  ),
+            ? Container(
+              width: Get.width,
+              margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+              child: ElevatedButton(
+                onPressed: () => controller.goToPageOrder(),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue.withOpacity(0.8),
+                  onPrimary: Colors.white,
                 ),
-        )
-            : const SizedBox() ;
+                child: const Text('Order now'),
+              ),
+            )
+            : const SizedBox();
       }
     });
   }
@@ -228,11 +226,16 @@ class MerchantDetail extends StatelessWidget {
               shrinkWrap: true,
               itemCount: report!.length,
               itemBuilder: (context, index) {
-                return bodyItems(
-                  index: index,
-                  image: controller.arrayProductImage[index],
-                  name: controller.arrayProductName[index],
-                  price: controller.arrayProductPrice[index],
+                return Column(
+                  children: [
+                    bodyItems(
+                      index: index,
+                      image: controller.arrayProductImage[index],
+                      name: controller.arrayProductName[index],
+                      price: controller.arrayProductPrice[index],
+                    ),
+                    index + 1 == report.length ?  const SizedBox(height: 50) : const SizedBox(),
+                  ],
                 );
               },
             ),
@@ -242,7 +245,12 @@ class MerchantDetail extends StatelessWidget {
     });
   }
 
-  Widget bodyItems({required index, required String image, required String name, required String price,}) {
+  Widget bodyItems({
+    required index,
+    required String image,
+    required String name,
+    required String price,
+  }) {
     return Container(
       width: Get.width,
       height: 110,
@@ -306,11 +314,12 @@ class MerchantDetail extends StatelessWidget {
           ),
 
           // button add or increase decrease
-          Positioned (
+          Positioned(
             right: 5,
             bottom: 2,
             child: controller.arrayProductQty[index].toString() != "0"
-                ? buttonIncreaseAndDecrease((controller.arrayProductQty[index]).toString(), index)
+                ? buttonIncreaseAndDecrease(
+                    (controller.arrayProductQty[index]).toString(), index)
                 : buttonAdd(index),
           ),
         ],
@@ -354,6 +363,7 @@ class MerchantDetail extends StatelessWidget {
       ],
     );
   }
+
   Widget buttonAdd(int index) {
     return InkWell(
       onTap: () {

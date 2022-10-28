@@ -57,6 +57,8 @@ class FoodByCategory extends StatelessWidget {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
+      } else if (status == RemoteDataStatus.none) {
+        return const Text('');
       } else {
         final report = controller.allTitleSubCategory.data;
         return SizedBox(
@@ -131,7 +133,9 @@ class FoodByCategory extends StatelessWidget {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
-      } else {
+      } else if (status == RemoteDataStatus.none) {
+        return ScreenWidgets.none;
+      }  else {
         final report = controller.storeData.data;
         return ListView.builder(
           shrinkWrap: true,
