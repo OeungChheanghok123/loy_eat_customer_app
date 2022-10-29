@@ -242,10 +242,10 @@ class Home extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          recentStore ? buildRecentOrder : const SizedBox(),
           titleTextWidget('Cuisines', 24),
           const SizedBox(height: 20),
           listCategory,
+          recentStore ? buildRecentOrder : const SizedBox(),
         ],
       ),
     );
