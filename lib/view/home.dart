@@ -7,7 +7,7 @@ import 'package:loy_eat_customer/view/screen_widget.dart';
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
-  final controller = Get.put(HomeController());
+  final controller = Get.put(HomeViewModel());
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +36,36 @@ class Home extends StatelessWidget {
     ],
   );
   Widget get getBody {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          buildCardFood,
-          buildCategory,
-        ],
-      ),
-    );
+    return Obx(() {
+      final status = controller.recentOrder.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else if (status == RemoteDataStatus.none) {
+        controller.hasRecentOrder.value = false;
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              buildCardFood,
+              buildCategory(controller.hasRecentOrder.value),
+            ],
+          ),
+        );
+      } else {
+        controller.hasRecentOrder.value = true;
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              buildCardFood,
+              buildCategory(controller.hasRecentOrder.value),
+            ],
+          ),
+        );
+      }
+    });
   }
 
   Widget get getDrawer {
@@ -211,25 +232,281 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget get buildCategory {
+  Widget buildCategory (bool recentStore) {
     return Container(
       width: Get.width,
       color: Colors.white,
       margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.fromLTRB(15, 30, 0, 0),
+      padding: const EdgeInsets.fromLTRB(15, 20, 0, 0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildRecentOrder,
+          recentStore ? buildRecentOrder : const SizedBox(),
           titleTextWidget('Cuisines', 24),
           const SizedBox(height: 20),
-          listCategory(),
+          listCategory,
         ],
       ),
     );
   }
-  Widget listCategory() {
+
+  Widget get buildRecentOrder {
+    return Container(
+      width: Get.width,
+      color: Colors.white,
+      margin: const EdgeInsets.only(top: 0),
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleTextWidget('Recent order', 24),
+          const SizedBox(height: 10),
+          listRecentRestaurant,
+        ],
+      ),
+    );
+  }
+  Widget get listRecentRestaurant {
+    return SizedBox(
+      height: 250,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: controller.listRecentStoreName.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () {
+              Get.toNamed('/merchant_detail', arguments: {
+                'image': controller.listRecentStoreImage[index],
+                'merchant_name': controller.listRecentStoreName[index],
+                'time': controller.listRecentStoreTime[index],
+                'delivery': controller.listRecentStoreDeliveryFee[index],
+                'distance': controller.listRecentStoreDistance[index],
+              });
+            },
+            child: restaurantItems(
+              title: controller.listRecentStoreName[index],
+              image: controller.listRecentStoreImage[index],
+              category: controller.listRecentStoreCategory[index],
+              time: controller.listRecentStoreTime[index],
+              delivery: controller.listRecentStoreDeliveryFee[index],
+              available: controller.listRecentStoreAvailable[index],
+            ),
+          );
+        },
+      ),
+    );
+  }
+  Widget restaurantItems({required String title,required String image, required String time, required String category, required String delivery, required bool available}) {
+    return Container(
+      width: 250,
+      margin: const EdgeInsets.only(right: 25),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage(image),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    width: 65,
+                    height: 25,
+                    margin: const EdgeInsets.only(left: 10, bottom: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '$time min',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 5,
+                  right: 10,
+                  child: Container(
+                    width: 25,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.favorite_outline_outlined, size: 16),
+                    ),
+                  ),
+                ),
+                available ? const SizedBox() : Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: InkWell(
+                    onTap: (){},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text('The shop now is closed.',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          available
+              ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
+                child: Text(title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 3, top: 5),
+                child: Row(
+                  children: [
+                    Icon(Icons.sell,
+                        size: 20, color: Colors.black.withOpacity(0.4)),
+                    Text(' • $category',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.4),
+                          fontSize: 16,
+                        )),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 3, top: 5),
+                child: Row(
+                  children: [
+                    delivery == '0.00'
+                        ? const Icon(Icons.local_shipping,
+                        size: 20, color: Colors.blue)
+                        : Icon(Icons.local_shipping,
+                        size: 20,
+                        color: Colors.black.withOpacity(0.4)),
+                    delivery == '0.00'
+                        ? const Text(' Free delivery',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ))
+                        : Text(' \$ $delivery',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.4),
+                          fontSize: 16,
+                        )),
+                  ],
+                ),
+              ),
+            ],
+          )
+              : InkWell(
+            onTap: () {},
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 3, top: 5),
+                  child: Row(
+                    children: [
+                      Icon(Icons.sell,
+                          size: 20, color: Colors.black.withOpacity(0.4)),
+                      Text(' • $category',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.4),
+                            fontSize: 16,
+                          )),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 3, top: 5),
+                  child: Row(
+                    children: [
+                      delivery == '0.00'
+                          ? const Icon(Icons.local_shipping,
+                          size: 20, color: Colors.blue)
+                          : Icon(Icons.local_shipping,
+                          size: 20,
+                          color: Colors.black.withOpacity(0.4)),
+                      delivery == '0.00'
+                          ? const Text(' Free delivery',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ))
+                          : Text(' \$ $delivery',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.4),
+                            fontSize: 16,
+                          )),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get listCategory {
     return Obx(() {
       final status = controller.cuisinesData.status;
       if (status == RemoteDataStatus.processing) {
@@ -238,22 +515,22 @@ class Home extends StatelessWidget {
         return ScreenWidgets.error;
       } else {
         final report = controller.cuisinesData.data;
-          return SizedBox(
-            height: 150,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: report!.length,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () => Get.toNamed('/food_by_category', arguments: {'title': controller.listCuisines[index]}),
-                  child: categoryStore(
-                    title: controller.listCuisines[index],
-                    image: controller.listImage[index],
-                  ),
-                );
-              },
-            ),
+        return SizedBox(
+          height: 150,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: report!.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () => Get.toNamed('/food_by_category', arguments: {'title': controller.listCuisines[index]}),
+                child: categoryStore(
+                  title: controller.listCuisines[index],
+                  image: controller.listImage[index],
+                ),
+              );
+            },
+          ),
         );
       }
     });
@@ -297,21 +574,6 @@ class Home extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget get buildRecentOrder {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        titleTextWidget('Recent order', 24),
-        const SizedBox(height: 10),
-        listRecentRestaurant(),
-      ],
-    );
-  }
-  Widget listRecentRestaurant() {
-    return Container();
   }
 
   Widget titleTextWidget(String text, double size) {

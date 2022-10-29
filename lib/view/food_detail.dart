@@ -39,24 +39,54 @@ class FoodDetail extends StatelessWidget {
     ],
   );
   Widget get getBody {
-    return Column(
-      children: [
-        buildTextFieldSearch,
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                buildCategoryCuisines,
-                buildAllRestaurant,
-                buildRecentOrder,
-                buildPopular,
-                buildCategoryFreeDelivery,
-              ],
+    return Obx(() {
+      final status = controller.recentOrder.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else if (status == RemoteDataStatus.none) {
+        controller.hasRecentOrder.value = false;
+        return Column(
+          children: [
+            buildTextFieldSearch,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    buildCategoryCuisines,
+                    buildAllRestaurant,
+                    controller.hasRecentOrder.value ? buildRecentOrder : const SizedBox(),
+                    buildPopular,
+                    buildCategoryFreeDelivery,
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ],
-    );
+          ],
+        );
+      } else {
+        controller.hasRecentOrder.value = true;
+        return Column(
+          children: [
+            buildTextFieldSearch,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    buildCategoryCuisines,
+                    buildAllRestaurant,
+                    controller.hasRecentOrder.value ? buildRecentOrder : const SizedBox(),
+                    buildPopular,
+                    buildCategoryFreeDelivery,
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+    });
   }
 
   Widget get buildTextFieldSearch {
@@ -239,52 +269,41 @@ class FoodDetail extends StatelessWidget {
         children: [
           titleTextWidget('Recent order', 24),
           const SizedBox(height: 10),
-          listRecentRestaurant(),
+          listRecentRestaurant,
         ],
       ),
     );
   }
-  Widget listRecentRestaurant() {
-    return Obx(() {
-      final status = controller.allStore.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = controller.allStore.data;
-        return SizedBox(
-          height: 250,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: report!.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  Get.toNamed('/merchant_detail', arguments: {
-                    'image': controller.listAllImage[index],
-                    'merchant_name': controller.listAllStore[index],
-                    'time': controller.listAllTime[index],
-                    'delivery': controller.listAllDeliveryFee[index],
-                    'distance': controller.listAllDistance[index],
-                  });
-                },
-                child: restaurantItems(
-                  title: controller.listAllStore[index],
-                  image: controller.listAllImage[index],
-                  category: controller.listAllStoreCategory[index],
-                  time: controller.listAllTime[index],
-                  delivery: controller.listAllDeliveryFee[index],
-                  available: controller.listAllAvailable[index],
-                ),
-              );
+  Widget get listRecentRestaurant {
+    return SizedBox(
+      height: 250,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: controller.listRecentStoreName.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () {
+              Get.toNamed('/merchant_detail', arguments: {
+                'image': controller.listRecentStoreImage[index],
+                'merchant_name': controller.listRecentStoreName[index],
+                'time': controller.listRecentStoreTime[index],
+                'delivery': controller.listRecentStoreDeliveryFee[index],
+                'distance': controller.listRecentStoreDistance[index],
+              });
             },
-          ),
-        );
-      }
-    });
-
+            child: restaurantItems(
+              title: controller.listRecentStoreName[index],
+              image: controller.listRecentStoreImage[index],
+              category: controller.listRecentStoreCategory[index],
+              time: controller.listRecentStoreTime[index],
+              delivery: controller.listRecentStoreDeliveryFee[index],
+              available: controller.listRecentStoreAvailable[index],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Widget get buildPopular {
@@ -306,13 +325,13 @@ class FoodDetail extends StatelessWidget {
   }
   Widget listPopularRestaurant() {
     return Obx(() {
-      final status = controller.storeDrink.status;
+      final status = controller.storePopular.status;
       if (status == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
       } else {
-        final report = controller.storeDrink.data;
+        final report = controller.storePopular.data;
         return SizedBox(
           height: 250,
           child: ListView.builder(
@@ -403,7 +422,6 @@ class FoodDetail extends StatelessWidget {
     });
 
   }
-
 
   Widget restaurantItems({required String title,required String image, required String time, required String category, required String delivery, required bool available}) {
     return Container(
