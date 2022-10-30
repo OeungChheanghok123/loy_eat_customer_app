@@ -9,7 +9,7 @@ import 'login.dart';
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
-  final controller = Get.put(HomeViewModel());
+  final controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +72,7 @@ class Home extends StatelessWidget {
 
   Widget get getDrawer {
     return Drawer(
-      child: controller.isLogin.value ? drawerLogInItems : drawerItems,
+      child: Obx(() => controller.isLogin.value ? drawerLogInItems : drawerItems),
     );
   }
   Widget get drawerLogInItems {
@@ -118,16 +118,17 @@ class Home extends StatelessWidget {
     );
   }
   Widget get drawerLoginHeader {
-    return const UserAccountsDrawerHeader(
-      accountName: Text('Chheanghok', style: TextStyle(
+    return UserAccountsDrawerHeader(
+      arrowColor: const Color.fromARGB(255, 0, 180, 213),
+      accountName: Text(controller.customerName.value, style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 16,
       ),),
-      accountEmail: Text('098496050', style: TextStyle(
+      accountEmail: Text(controller.customerPhone.value, style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 16,
       ),),
-      currentAccountPicture: CircleAvatar(
+      currentAccountPicture: const CircleAvatar(
         backgroundColor: Colors.blue,
         child: FlutterLogo(size: 42.0),
       ),

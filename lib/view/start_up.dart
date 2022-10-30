@@ -9,7 +9,7 @@ class StartUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Timer(const Duration(seconds: 4), () => Get.offAll(() => Home()));
+    Timer(const Duration(seconds: 4), () => Get.to(() => Home()));
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 0, 180, 213),
       body: Container(

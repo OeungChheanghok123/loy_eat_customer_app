@@ -50,7 +50,7 @@ class FoodByCategoryController extends GetxController {
           product.listen((result) {
             if (result.docs.isNotEmpty) {
               for (var data in result.docs) {
-                var tempProductDetail = data.data()['detail'];
+                var tempProductDetail = data.data()['detail'] ?? '';
                 if (tempProductDetail != '') {
                   listSubCategory.add(tempProductDetail);
                   listSubCategory = listSubCategory.toSet().toList();
@@ -95,7 +95,6 @@ class FoodByCategoryController extends GetxController {
     });
   }
   void getMerchantByDetail() {
-    var tempListMerchantId = [];
     var selectedItems = listSubCategory[selectedIndex.value];
     debugPrint('selectedItems: $selectedItems');
 
@@ -104,27 +103,34 @@ class FoodByCategoryController extends GetxController {
     } else {
       final product = productCollection.where('detail', isEqualTo: selectedItems).snapshots();
       product.listen((result) {
-        for (var data in result.docs) {
-          tempListMerchantId.add(data['merchant_id']);
+        var tempListMerchantId = [];
+
+        if (result.docs.isNotEmpty) {
+          for (var data in result.docs) {
+            tempListMerchantId.add(data['merchant_id'] ?? '');
+          }
+
+          tempListMerchantId = tempListMerchantId.toSet().toList();
+          debugPrint('temListMerchantId: $tempListMerchantId');
+          clearList();
+
+          for (int i = 0 ; i < tempListMerchantId.length; i++) {
+            var id = tempListMerchantId[i];
+            final merchant = merchantCollection.where('merchant_id', isEqualTo: id).snapshots();
+            merchant.listen((result) {
+              for (var data in result.docs) {
+                listStore.add(data.data()['merchant_name'] ?? '');
+                listCategory.add(data.data()['category'] ?? '');
+                listTime.add(data.data()['time'] ?? '');
+                listImage.add(data.data()['image'] ?? '');
+                listDeliveryFee.add(data.data()['delivery_fee'] ?? '');
+              }
+              _storeData.value = RemoteData<List>(status: RemoteDataStatus.success, data: listStore);
+            });
+          }
         }
-
-        tempListMerchantId = tempListMerchantId.toSet().toList();
-        debugPrint('temListMerchantId: $tempListMerchantId');
-        clearList();
-
-        for (int i = 0 ; i < tempListMerchantId.length; i++) {
-          var id = tempListMerchantId[i];
-          final merchant = merchantCollection.where('merchant_id', isEqualTo: id).snapshots();
-          merchant.listen((result) {
-            for (var data in result.docs) {
-              listStore.add(data.data()['merchant_name'] ?? '');
-              listCategory.add(data.data()['category'] ?? '');
-              listTime.add(data.data()['time'] ?? '');
-              listImage.add(data.data()['image'] ?? '');
-              listDeliveryFee.add(data.data()['delivery_fee'] ?? '');
-            }
-            _storeData.value = RemoteData<List>(status: RemoteDataStatus.success, data: listStore);
-          });
+        else {
+          _storeData.value = RemoteData<List>(status: RemoteDataStatus.none, data: null);
         }
       });
     }

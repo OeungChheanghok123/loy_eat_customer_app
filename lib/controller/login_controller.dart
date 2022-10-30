@@ -39,9 +39,7 @@ class LoginController extends GetxController {
 
   void getCustomerPhoneNumber() async {
     checkList();
-    final customer = await customerCollection
-        .where('tel', isEqualTo: customerNumber.value)
-        .get();
+    final customer = await customerCollection.where('tel', isEqualTo: customerNumber.value).get();
     if (customer.docs.isNotEmpty) {
       showOtpText.value = true;
       phoneCorrect.value = true;
@@ -61,9 +59,7 @@ class LoginController extends GetxController {
       phoneNumber: '+855${phoneNumberController.text}',
       timeout: const Duration(seconds: 60),
       verificationCompleted: (PhoneAuthCredential credential) {
-        auth
-            .signInWithCredential(credential)
-            .then((value) => debugPrint('You are logged in successfully'));
+        auth.signInWithCredential(credential).then((value) => debugPrint('You are logged in successfully'));
       },
       verificationFailed: (FirebaseAuthException e) {
         if (e.code == 'invalid-phone-number') {
@@ -80,10 +76,10 @@ class LoginController extends GetxController {
   void verifyOTP() async {
     try {
       otpCorrect.value = true;
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationIDReceived, smsCode: otpCodeController.text);
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationIDReceived, smsCode: otpCodeController.text);
       await auth.signInWithCredential(credential);
-
+      cacheHelper.writeCache(customerNumber.value);
+      debugPrint('number phone customer : ${cacheHelper.readCache().toString()}');
       Navigator.pushAndRemoveUntil(
           Get.context!,
           MaterialPageRoute<void>(

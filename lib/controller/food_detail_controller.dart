@@ -4,7 +4,7 @@ import 'package:loy_eat_customer/controller/home_controller.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
 
 class FoodDetailController extends GetxController {
-  final homeViewModel = Get.put(HomeViewModel());
+  final homeViewModel = Get.put(HomeController());
 
   var hasRecentOrder = true.obs;
 

@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat_customer/controller/cache_helper.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
 
-class HomeViewModel extends GetxController {
+class HomeController extends GetxController {
   var isLogin = false.obs;
-  var customerId = '1'.obs;
+  var customerId = ''.obs;
+  var customerPhone = ''.obs;
+  var customerName = ''.obs;
   var hasRecentOrder = true.obs;
 
   var listCuisines = [];
@@ -30,12 +33,43 @@ class HomeViewModel extends GetxController {
 
   final merchantCollection = FirebaseFirestore.instance.collection('merchants');
   final orderCollection = FirebaseFirestore.instance.collection('orders');
+  final customerCollection = FirebaseFirestore.instance.collection('customers');
+
+  final cacheHelper = CacheHelper();
 
   @override
   void onInit() {
     super.onInit();
+    getCustomerDetail();
     loadCuisines();
-    loadRecentOrder();
+  }
+
+  void getCustomerDetail() async {
+    customerPhone.value = await cacheHelper.readCache();
+
+    if (customerPhone.value != '') {
+      debugPrint('customerPhone.value = ${customerPhone.value}');
+      isLogin.value = true;
+      final customer = customerCollection.where('tel', isEqualTo: customerPhone.value).snapshots();
+      customer.listen((result) {
+        for (var data in result.docs) {
+          customerId.value = data.data()['customer_id'] ?? '';
+          customerName.value = data.data()['customer_name'] ?? '';
+
+          if (customerId.value != '') {
+            loadRecentOrder();
+          }
+          else {
+            debugPrint('customerName.value = ${customerPhone.value}');
+          }
+        }
+      });
+    }
+    else {
+      isLogin.value = false;
+      debugPrint('customerPhone.value = ${customerPhone.value}');
+      _recentOrder.value = RemoteData<List>(status: RemoteDataStatus.none, data: null);
+    }
   }
 
   void foodDeliveryButton() {

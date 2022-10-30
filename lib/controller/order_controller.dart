@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:loy_eat_customer/controller/home_controller.dart';
 import 'package:loy_eat_customer/controller/merchant_detail_controller.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
 
@@ -16,6 +17,8 @@ class OrderController extends GetxController {
 
   final _merchantDetailData = RemoteData<List<String>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List> get merchantDetailData => _merchantDetailData.value;
+
+  final homeController = Get.put(HomeController());
 
   var merchantId = '';
   var merchantName = '';
@@ -34,8 +37,8 @@ class OrderController extends GetxController {
   var subTotalPrice = 0.0.obs;
   var totalPrice = 0.0.obs;
 
-  var customerId = '1';
-  var customerName = 'Jonh Walker';
+  var customerId = '';
+  var customerName = '';
 
   String? today;
   String? time;
@@ -45,6 +48,12 @@ class OrderController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    customerId = homeController.customerId.value;
+    customerName = homeController.customerName.value;
+
+    debugPrint('customerId = $customerId');
+    debugPrint('customerName = $customerName');
+
     merchantId = Get.arguments['merchant_id'];
     merchantName = Get.arguments['merchant_name'];
     deliveryFee = Get.arguments['fee'];

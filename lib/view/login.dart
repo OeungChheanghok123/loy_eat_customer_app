@@ -200,7 +200,7 @@ class Login extends StatelessWidget {
                   width: Get.width,
                   margin: const EdgeInsets.fromLTRB(20, 15, 20, 30),
                   decoration: BoxDecoration(
-                    color: Colors.transparent,
+                    color: Colors.blue,
                     borderRadius: BorderRadius.circular(50),
                   ),
                   alignment: Alignment.center,

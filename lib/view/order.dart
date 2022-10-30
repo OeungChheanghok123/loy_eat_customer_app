@@ -239,7 +239,6 @@ class Order extends StatelessWidget {
   Widget bodyItems({required index, required String image, required String name, required String price}) {
     return Container(
       width: Get.width,
-      height: 100,
       margin: const EdgeInsets.only(bottom: 0),
       child: Stack(
         children: [
