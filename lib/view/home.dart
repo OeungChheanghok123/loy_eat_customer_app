@@ -4,6 +4,8 @@ import 'package:loy_eat_customer/controller/home_controller.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
 import 'package:loy_eat_customer/view/screen_widget.dart';
 
+import 'login.dart';
+
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
@@ -159,6 +161,7 @@ class Home extends StatelessWidget {
       accountEmail: InkWell(
         onTap: () {
           debugPrint('Sign up / Log in');
+          Get.to(() => Login());
         },
         child: Container(
           width: Get.width,

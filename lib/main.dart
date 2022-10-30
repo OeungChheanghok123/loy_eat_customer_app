@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat_customer/controller/route_controller.dart';
-import 'package:loy_eat_customer/view/home.dart';
+import 'package:loy_eat_customer/view/start_up.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       defaultTransition: Transition.noTransition,
       getPages: getRoutPage,
-      home: Home(),
+      home: const StartUp(),
     );
   }
 }

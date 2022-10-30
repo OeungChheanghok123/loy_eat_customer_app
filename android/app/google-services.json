@@ -9,16 +9,130 @@
       "client_info": {
         "mobilesdk_app_id": "1:141243211026:android:469f48e68e2b67c19be7cb",
         "android_client_info": {
+          "package_name": "com.example.loy_eat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "141243211026-3g4uud6g588j2r6oesmau8b6spp3idlp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.loy_eat",
+            "certificate_hash": "32aca37546d0f3398336c7c0c6a3b3e3078ca338"
+          }
+        },
+        {
+          "client_id": "141243211026-ucaqdu46r89jpd0nvorrplqh37dajjn6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.loy_eat",
+            "certificate_hash": "10f1f6c1dfd7e82dc404187b5f86a6bda43a26cb"
+          }
+        },
+        {
+          "client_id": "141243211026-m7sb912eoa21r51q010d649en7e8avic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoEsJQ8fL3EKIHvEPoLbz8g0qQ2eYneyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "141243211026-m7sb912eoa21r51q010d649en7e8avic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:141243211026:android:6a14e830f3dac8649be7cb",
+        "android_client_info": {
           "package_name": "com.example.loy_eat_customer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "141243211026-ucaqdu46r89jpd0nvorrplqh37dajjn6.apps.googleusercontent.com",
+          "client_id": "141243211026-9l8i9hcv958qhdrlvems7dkvee976599.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.loy_eat_customer",
             "certificate_hash": "10f1f6c1dfd7e82dc404187b5f86a6bda43a26cb"
+          }
+        },
+        {
+          "client_id": "141243211026-ijtehtimu8pn2g6lck806ertk92799tp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.loy_eat_customer",
+            "certificate_hash": "32aca37546d0f3398336c7c0c6a3b3e3078ca338"
+          }
+        },
+        {
+          "client_id": "141243211026-jqebh2vsg121ndu5a0hei4uq1dv6gugv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.loy_eat_customer",
+            "certificate_hash": "9d489a5b0e8835f6eda1643f44341dd89dcbc39b"
+          }
+        },
+        {
+          "client_id": "141243211026-m7sb912eoa21r51q010d649en7e8avic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoEsJQ8fL3EKIHvEPoLbz8g0qQ2eYneyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "141243211026-m7sb912eoa21r51q010d649en7e8avic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:141243211026:android:9330916bbe0c9c5c9be7cb",
+        "android_client_info": {
+          "package_name": "com.example.loy_eat_merchant_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "141243211026-emrarp7u75l41b9thrmro2165mndf4p3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.loy_eat_merchant_app",
+            "certificate_hash": "9d489a5b0e8835f6eda1643f44341dd89dcbc39b"
+          }
+        },
+        {
+          "client_id": "141243211026-l821vu2hpfl1vod08on51086md1oa274.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.loy_eat_merchant_app",
+            "certificate_hash": "10f1f6c1dfd7e82dc404187b5f86a6bda43a26cb"
+          }
+        },
+        {
+          "client_id": "141243211026-v34i9v4ng9fop70b8bsgm4j7dpbialb0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.loy_eat_merchant_app",
+            "certificate_hash": "32aca37546d0f3398336c7c0c6a3b3e3078ca338"
           }
         },
         {

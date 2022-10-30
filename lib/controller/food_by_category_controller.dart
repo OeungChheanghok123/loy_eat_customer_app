@@ -26,6 +26,7 @@ class FoodByCategoryController extends GetxController {
   var listImage = [];
   var listDeliveryFee = [];
   var listDistance = [];
+  var listAvailable = [];
 
   @override
   void onInit() {
@@ -84,6 +85,7 @@ class FoodByCategoryController extends GetxController {
           listImage.add(data.data()['image'] ?? '');
           listDeliveryFee.add(data.data()['delivery_fee'] ?? '');
           listDistance.add(data.data()['distance'] ?? '');
+          listAvailable.add(data.data()['is_available'] ?? '');
         }
         _storeData.value = RemoteData<List>(status: RemoteDataStatus.success, data: listStore);
       }

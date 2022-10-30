@@ -158,6 +158,7 @@ class FoodByCategory extends StatelessWidget {
                 category: controller.listCategory[index],
                 time: controller.listTime[index],
                 delivery: controller.listDeliveryFee[index],
+                available: controller.listAvailable[index],
               ),
             );
           },
@@ -166,12 +167,14 @@ class FoodByCategory extends StatelessWidget {
     });
   }
 
-  Widget restaurantItems(
-      {required String title,
-      required String image,
-      required String time,
-      required String category,
-      required String delivery}) {
+  Widget restaurantItems({
+    required String title,
+    required String image,
+    required String time,
+    required String category,
+    required String delivery,
+    required bool available,
+  }) {
     return Container(
       width: Get.width,
       height: 260,
@@ -181,82 +184,194 @@ class FoodByCategory extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: Container(
-              alignment: Alignment.bottomLeft,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: AssetImage(image),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Container(
-                width: 65,
-                height: 30,
-                margin: const EdgeInsets.only(left: 10, bottom: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Center(
-                  child: Text(
-                    '$time min',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+            child: Stack(
+              children: [
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage(image),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Container(
+                    width: 65,
+                    height: 30,
+                    margin: const EdgeInsets.only(left: 10, bottom: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '$time min',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 3, top: 5),
-            child: Row(
-              children: [
-                Icon(Icons.sell,
-                    size: 20, color: Colors.black.withOpacity(0.4),),
-                Text(' • $category',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.4),
-                      fontSize: 16,
-                    ),),
+                Positioned(
+                  top: 5,
+                  right: 10,
+                  child: Container(
+                    width: 25,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.favorite_outline_outlined, size: 16),
+                    ),
+                  ),
+                ),
+                available ? const SizedBox() : Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: InkWell(
+                    onTap: (){},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text('The shop now is closed.',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(left: 3, top: 5),
-            child: Row(
+          available ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 3, top: 5),
+                child: Row(
+                  children: [
+                    Icon(Icons.sell,
+                      size: 20, color: Colors.black.withOpacity(0.4),),
+                    Text(' • $category',
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.4),
+                        fontSize: 16,
+                      ),),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 3, top: 5),
+                child: Row(
+                  children: [
+                    delivery == '0.00'
+                        ? const Icon(Icons.local_shipping,
+                      size: 20, color: Colors.blue,)
+                        : Icon(Icons.local_shipping,
+                      size: 20, color: Colors.black.withOpacity(0.4),),
+                    delivery == '0.00'
+                        ? const Text(' Free delivery',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),)
+                        : Text(' \$ $delivery',
+                      style: TextStyle(
+                        color: Colors.black.withOpacity(0.4),
+                        fontSize: 16,
+                      ),),
+                  ],
+                ),
+              ),
+            ],
+          ) : InkWell(
+            onTap: () {},
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                delivery == '0.00'
-                    ? const Icon(Icons.local_shipping,
-                        size: 20, color: Colors.blue,)
-                    : Icon(Icons.local_shipping,
-                        size: 20, color: Colors.black.withOpacity(0.4),),
-                delivery == '0.00'
-                    ? const Text(' Free delivery',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),)
-                    : Text(' \$ $delivery',
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.4),
-                          fontSize: 16,
-                        ),),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(3, 5, 0, 0),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 3, top: 5),
+                  child: Row(
+                    children: [
+                      Icon(Icons.sell,
+                          size: 20, color: Colors.black.withOpacity(0.4)),
+                      Text(' • $category',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.4),
+                            fontSize: 16,
+                          )),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 3, top: 5),
+                  child: Row(
+                    children: [
+                      delivery == '0.00'
+                          ? const Icon(Icons.local_shipping,
+                          size: 20, color: Colors.blue)
+                          : Icon(Icons.local_shipping,
+                          size: 20,
+                          color: Colors.black.withOpacity(0.4)),
+                      delivery == '0.00'
+                          ? const Text(' Free delivery',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ))
+                          : Text(' \$ $delivery',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.4),
+                            fontSize: 16,
+                          )),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
