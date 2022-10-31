@@ -21,6 +21,7 @@ class MerchantDetailController extends GetxController {
   var arrayProductImage = [];
   var arrayProductPrice = [];
   var arrayProductQty = [];
+  var arrayProductStatus = [];
 
   var canOrder = false.obs;
 
@@ -63,9 +64,11 @@ class MerchantDetailController extends GetxController {
         for (var data in result.docs) {
           var tempMerchantID = data.data()['merchant_id'];
           merchantId.value = tempMerchantID;
-
           final product = productCollection.where('merchant_id', isEqualTo: tempMerchantID).snapshots();
           product.listen((result) {
+            clearProductItem();
+            _productItemData.value = RemoteData<List>(status: RemoteDataStatus.processing, data: null);
+
             if (result.docs.isNotEmpty) {
               for (var data in result.docs) {
                 arrayProductImage.add(data.data()['image'] ?? '');
@@ -73,6 +76,7 @@ class MerchantDetailController extends GetxController {
                 arrayProductName.add(data.data()['product_name'] ?? '');
                 arrayProductPrice.add(data.data()['price'] ?? '');
                 arrayProductQty.add('0');
+                arrayProductStatus.add(data.data()['status'] ?? '');
               }
               _productItemData.value = RemoteData<List>(status: RemoteDataStatus.success, data: arrayProductName);
             }
@@ -145,5 +149,14 @@ class MerchantDetailController extends GetxController {
     }
 
     _productItemData.value = RemoteData<List>(status: RemoteDataStatus.success, data: arrayProductName);
+  }
+
+  void clearProductItem() {
+    arrayProductId.clear();
+    arrayProductImage.clear();
+    arrayProductName.clear();
+    arrayProductPrice.clear();
+    arrayProductQty.clear();
+    arrayProductStatus.clear();
   }
 }

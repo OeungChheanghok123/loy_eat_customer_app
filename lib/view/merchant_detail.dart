@@ -233,6 +233,7 @@ class MerchantDetail extends StatelessWidget {
                       image: controller.arrayProductImage[index],
                       name: controller.arrayProductName[index],
                       price: controller.arrayProductPrice[index],
+                      status: controller.arrayProductStatus[index],
                     ),
                     index + 1 == report.length ?  const SizedBox(height: 50) : const SizedBox(),
                   ],
@@ -250,6 +251,7 @@ class MerchantDetail extends StatelessWidget {
     required String image,
     required String name,
     required String price,
+    required bool status,
   }) {
     return Container(
       width: Get.width,
@@ -257,7 +259,7 @@ class MerchantDetail extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 15),
       child: Stack(
         children: [
-          Row(
+          status ? Row(
             children: [
               // image
               Container(
@@ -311,17 +313,72 @@ class MerchantDetail extends StatelessWidget {
                 ),
               ),
             ],
+          ) : Row(
+            children: [
+              // image
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  image: DecorationImage(
+                    image: AssetImage(image),
+                    fit: BoxFit.cover,
+                    opacity: 0.5,
+                  ),
+                ),
+              ),
+
+              // detail
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 15, left: 15, bottom: 5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: status ? Colors.black : Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            '0 Sold',
+                            style: TextStyle(
+                              color: status ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0.2),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        '\$ $price',
+                        style: TextStyle(
+                          color: status ? Colors.red : Colors.red.withOpacity(0.5),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
 
           // button add or increase decrease
-          Positioned(
+          status ? Positioned(
             right: 5,
             bottom: 2,
             child: controller.arrayProductQty[index].toString() != "0"
-                ? buttonIncreaseAndDecrease(
-                    (controller.arrayProductQty[index]).toString(), index)
+                ? buttonIncreaseAndDecrease((controller.arrayProductQty[index]).toString(), index)
                 : buttonAdd(index),
-          ),
+          ) : const SizedBox(),
         ],
       ),
     );
