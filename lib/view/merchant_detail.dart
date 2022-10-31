@@ -327,6 +327,7 @@ class MerchantDetail extends StatelessWidget {
                     opacity: 0.5,
                   ),
                 ),
+                child: Center(child: Container(color: Colors.red.withOpacity(0.6), padding: const EdgeInsets.all(5), child: const Text('Sold out', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)))),
               ),
 
               // detail
