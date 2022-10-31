@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat_customer/controller/cache_helper.dart';
+import 'package:loy_eat_customer/controller/home_controller.dart';
 import 'package:loy_eat_customer/view/home.dart';
 
 class LoginController extends GetxController {
@@ -20,13 +21,32 @@ class LoginController extends GetxController {
 
   final cacheHelper = CacheHelper();
   final customerCollection = FirebaseFirestore.instance.collection('customers');
+  final homeController = Get.put(HomeController());
 
   void buttonNextClick() {
     getCustomerPhoneNumber();
   }
 
-  void buttonSubmitClick() {
-    verifyOTP();
+  void buttonSubmitClick(BuildContext context) async {
+    try {
+      otpCorrect.value = true;
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationIDReceived, smsCode: otpCodeController.text);
+      await auth.signInWithCredential(credential);
+      cacheHelper.writeCache(customerNumber.value);
+
+      debugPrint('number phone customer : ${cacheHelper.readCache().toString()}');
+
+      Future.delayed(const Duration(seconds: 3), () => homeController.getCustomerDetail());
+
+      Navigator.pushAndRemoveUntil(
+        Get.context!,
+        MaterialPageRoute<void>(builder: (BuildContext context) => Home()), (route) => false,
+      );
+
+    } catch (e) {
+      debugPrint('your otp number not correctly.');
+      otpCorrect.value = false;
+    }
   }
 
   void checkList() {
@@ -73,23 +93,4 @@ class LoginController extends GetxController {
     );
   }
 
-  void verifyOTP() async {
-    try {
-      otpCorrect.value = true;
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationIDReceived, smsCode: otpCodeController.text);
-      await auth.signInWithCredential(credential);
-      cacheHelper.writeCache(customerNumber.value);
-      debugPrint('number phone customer : ${cacheHelper.readCache().toString()}');
-      Navigator.pushAndRemoveUntil(
-          Get.context!,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) => Home(),
-          ),
-          (route) => false,
-      );
-    } catch (e) {
-      debugPrint('your otp number not correctly.');
-      otpCorrect.value = false;
-    }
-  }
 }

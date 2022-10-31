@@ -189,7 +189,7 @@ class Login extends StatelessWidget {
               Obx((() => loginViewModel.showOtpText.value ? InkWell(
                 onTap: (){
                   debugPrint('button Submit click');
-                  loginViewModel.buttonSubmitClick();
+                  loginViewModel.buttonSubmitClick(context);
                 },
                 focusColor: Colors.transparent,
                 highlightColor: Colors.transparent,

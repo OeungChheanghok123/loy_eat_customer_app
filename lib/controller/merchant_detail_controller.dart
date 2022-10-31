@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat_customer/controller/home_controller.dart';
 import 'package:loy_eat_customer/model/remote_data.dart';
 
 class MerchantDetailController extends GetxController {
@@ -36,6 +37,8 @@ class MerchantDetailController extends GetxController {
 
   final merchantCollection = FirebaseFirestore.instance.collection('merchants');
   final productCollection = FirebaseFirestore.instance.collection('products');
+
+  final homeController = Get.put(HomeController());
 
   @override
   void onInit() {
@@ -80,7 +83,12 @@ class MerchantDetailController extends GetxController {
   }
 
   void goToPageOrder() {
-    Get.toNamed('/order', arguments: {'merchant_id': merchantId.value, 'merchant_name': title.value, 'fee': fee.value, 'time': time.value, 'distance': distance.value});
+    if (homeController.isLogin.value == true) {
+      Get.toNamed('/order', arguments: {'merchant_id': merchantId.value, 'merchant_name': title.value, 'fee': fee.value, 'time': time.value, 'distance': distance.value});
+    }
+    else {
+      Get.toNamed('/login');
+    }
   }
 
   void updateQty() {

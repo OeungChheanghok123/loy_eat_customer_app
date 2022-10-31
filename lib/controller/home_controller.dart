@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat_customer/controller/cache_helper.dart';
@@ -140,5 +141,10 @@ class HomeController extends GetxController {
     listRecentStoreDeliveryFee.clear();
     listRecentStoreDistance.clear();
     listRecentStoreAvailable.clear();
+  }
+
+  Future<void> signOut() async {
+   await  FirebaseAuth.instance.signOut();
+   cacheHelper.removeCache();
   }
 }

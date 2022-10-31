@@ -112,7 +112,14 @@ class Home extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.logout),
           title: const Text('Log out'),
-          onTap: () {},
+          onTap: () async {
+            controller.signOut();
+            controller.isLogin.value = false;
+            controller.customerId.value = '';
+            controller.customerName.value = '';
+
+            Navigator.of(Get.context!).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (route) => false);
+          },
         ),
       ],
     );
@@ -123,10 +130,12 @@ class Home extends StatelessWidget {
       accountName: Text(controller.customerName.value, style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 16,
+        color: Colors.white,
       ),),
       accountEmail: Text(controller.customerPhone.value, style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 16,
+        color: Colors.white,
       ),),
       currentAccountPicture: const CircleAvatar(
         backgroundColor: Colors.blue,
